@@ -1,4 +1,4 @@
-# Dotfiles Repository Instructions
+# myagenterminal Repository Instructions
 
 ## Scope
 

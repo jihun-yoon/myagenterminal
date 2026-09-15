@@ -1,12 +1,24 @@
-# 개발환경 설계 가이드
+# myagenterminal 개발환경 설계 가이드
 
-이 문서는 dotfiles를 처음 접하는 개발자를 위한 설명서입니다. 명령을 그대로
-복사하기 전에, 이 저장소가 무엇을 관리하고 각 도구가 어떻게 연결되는지 이해하는
-것을 목표로 합니다.
+이 문서는 myagenterminal과 dotfiles 방식의 환경 관리를 처음 접하는 개발자를 위한
+설명서입니다. 명령을 그대로 복사하기 전에, 이 저장소가 무엇을 관리하고 각 도구가
+어떻게 연결되는지 이해하는 것을 목표로 합니다.
 
 > 중요한 안전 원칙: 저장소를 clone하는 것만으로는 현재 Mac이 바뀌지 않습니다.
 > `./install.sh`도 기본적으로 미리보기만 수행합니다. 실제 변경은 사용자가
 > `--apply`를 명시했을 때만 시작됩니다.
+
+## 영감과 차이점
+
+myagenterminal은 [Kun Chen의 dotfiles](https://github.com/kunchenguid/dotfiles)에서
+영감을 받았습니다. 재현 가능한 terminal-first macOS 환경, WezTerm과 Neovim을
+중심으로 한 작업 방식, Herdr 활용, 여러 coding agent가 공유하는 정책이라는 핵심
+아이디어를 참고했습니다.
+
+다만 원본을 그대로 복제하지는 않습니다. myagenterminal은 Nix 중심 구성 대신
+Homebrew, mise, GNU Stow를 사용하고, Claude Code와 Codex는 publisher의 native
+installer로 관리합니다. 또한 전역 agent 정책은 자동으로 덮어쓰거나 연결하지 않고
+사용자가 직접 검토하고 적용하도록 설계했습니다.
 
 ## 1. 우리가 해결하려는 문제
 
@@ -38,7 +50,7 @@
 │    Publisher installer → Claude Code와 Codex 설치        │
 ├─────────────────────────────────────────────────────────┤
 │ 2. 설정 계층                                             │
-│    dotfiles 파일 → GNU Stow → 홈 디렉터리 symbolic link │
+│    myagenterminal 설정 → GNU Stow → 홈 디렉터리 symlink │
 ├─────────────────────────────────────────────────────────┤
 │ 3. 셸과 런타임 계층                                      │
 │    zsh → mise / Starship / zoxide / fzf / Atuin         │
@@ -62,6 +74,7 @@
 Unix 계열 시스템에서는 이름이 `.`으로 시작하는 파일을 숨김 파일이라고 부릅니다.
 `~/.zshrc`, `~/.gitconfig`처럼 많은 개발 도구가 이 파일에 설정을 저장합니다.
 이러한 설정 파일을 모아 관리하는 저장소를 보통 dotfiles라고 부릅니다.
+myagenterminal은 이 방식을 사용하는 이 프로젝트의 이름입니다.
 
 여기서 `~`는 현재 사용자의 홈 디렉터리입니다. macOS에서는 대개 다음과 같습니다.
 
@@ -78,10 +91,10 @@ Windows의 바로가기와 비슷하지만, 대부분의 프로그램은 symlink
 ```text
 ~/.config/nvim
         │
-        └── 가리킴 ──→ ~/Documents/Projects/myterminal/nvim/.config/nvim
+        └── 가리킴 ──→ /path/to/myagenterminal/nvim/.config/nvim
 ```
 
-이 구조에서는 Neovim 설정을 수정하면 실제로 dotfiles 저장소 안의 파일이
+이 구조에서는 Neovim 설정을 수정하면 실제로 myagenterminal 저장소 안의 파일이
 수정됩니다. 따라서 `git status`로 설정 변경을 바로 확인할 수 있습니다.
 
 ### GNU Stow
@@ -90,7 +103,7 @@ Stow는 위 symlink를 패키지 단위로 만들고 정리하는 도구입니�
 `nvim/` 디렉터리 내부는 홈 디렉터리 구조를 그대로 흉내 냅니다.
 
 ```text
-dotfiles/nvim/.config/nvim/init.lua
+myagenterminal/nvim/.config/nvim/init.lua
           └─────────┬───────────┘
                     │ Stow
                     ▼
@@ -98,7 +111,7 @@ dotfiles/nvim/.config/nvim/init.lua
 ```
 
 이 저장소는 `stow --adopt`를 사용하지 않습니다. `--adopt`는 홈에 있던 파일을
-dotfiles 쪽으로 가져오면서 저장소 파일을 바꿀 수 있기 때문입니다. 기존 파일과
+myagenterminal 쪽으로 가져오면서 저장소 파일을 바꿀 수 있기 때문입니다. 기존 파일과
 충돌하면 자동으로 처리하지 않고 멈추는 것이 이 설계의 핵심 안전장치입니다.
 
 ### Homebrew와 Brewfile
@@ -135,7 +148,7 @@ uv   = 한 Python 프로젝트의 환경과 패키지를 관리
 ## 4. 저장소 디렉터리 둘러보기
 
 ```text
-dotfiles/
+myagenterminal/
 ├── Brewfile
 ├── install.sh
 ├── AGENTS.md
@@ -165,7 +178,7 @@ dotfiles/
 | `scripts/agents.sh` | Claude Code와 Codex의 native 설치·업데이트 관리 |
 | `scripts/check.sh` | 임시 홈에서 설치 방법을 검증 |
 | `scripts/macos.sh` | Finder와 키 반복 설정을 선택적으로 적용 |
-| `AGENTS.md` | 이 dotfiles 프로젝트에만 적용되는 작업 규칙 |
+| `AGENTS.md` | 이 myagenterminal 프로젝트에만 적용되는 작업 규칙 |
 | `agents/AGENTS.md` | 전역 agent 규칙을 직접 설정할 때 참고할 템플릿 |
 | `wezterm/`, `zsh/` 등 | 프로그램별 Stow 패키지 |
 
@@ -420,7 +433,7 @@ Stow는 미리보기와 링크 생성에 필요한 도구입니다.
 ### 3단계: dry-run 실행
 
 ```bash
-cd ~/Documents/Projects/myterminal
+cd /path/to/myagenterminal
 ./install.sh
 ```
 
@@ -480,12 +493,12 @@ existing target is neither a link nor a directory: .zshrc
 이때 기존 파일을 바로 삭제하지 마세요. 먼저 차이를 읽습니다.
 
 ```bash
-diff -u ~/.zshrc ~/Documents/Projects/myterminal/zsh/.zshrc
+diff -u ~/.zshrc /path/to/myagenterminal/zsh/.zshrc
 ```
 
 그다음 세 가지 중 하나를 선택합니다.
 
-1. 기존 설정에서 필요한 줄을 dotfiles 파일로 수동 병합합니다.
+1. 기존 설정에서 필요한 줄을 myagenterminal 파일로 수동 병합합니다.
 2. 새 설정을 원하지 않으면 `scripts/bootstrap.sh`의 `stow_packages` 목록에서 해당
    패키지를 제외합니다.
 3. 기존 파일을 안전한 백업 위치로 직접 옮긴 뒤 dry-run을 다시 실행합니다.
@@ -493,7 +506,7 @@ diff -u ~/.zshrc ~/Documents/Projects/myterminal/zsh/.zshrc
 예를 들어 백업하려면 날짜가 포함된 명확한 이름을 사용합니다.
 
 ```bash
-mv ~/.zshrc ~/.zshrc.before-dotfiles
+mv ~/.zshrc ~/.zshrc.before-myagenterminal
 ./install.sh
 ```
 
@@ -531,7 +544,7 @@ mise install
 alias gs="git status"
 ```
 
-이미 symlink가 적용된 상태라면 파일을 저장하는 순간 dotfiles 저장소가 변경됩니다.
+이미 symlink가 적용된 상태라면 파일을 저장하는 순간 myagenterminal 저장소가 변경됩니다.
 새 터미널을 열거나 `source ~/.zshrc`로 현재 셸에 반영할 수 있습니다.
 
 ### Homebrew 프로그램 추가하기
@@ -545,7 +558,7 @@ brew "shellcheck"
 그다음 패키지만 적용하려면 다음을 실행합니다.
 
 ```bash
-brew bundle --no-upgrade --file ~/Documents/Projects/myterminal/Brewfile
+brew bundle --no-upgrade --file /path/to/myagenterminal/Brewfile
 ```
 
 ### Neovim 플러그인 추가하기

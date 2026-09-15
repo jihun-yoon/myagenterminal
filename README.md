@@ -1,14 +1,26 @@
-# dotfiles
+# myagenterminal
 
-A terminal-first macOS development environment built around Homebrew, GNU Stow,
-mise, and a single version-controlled source of truth.
+A terminal-first, agent-oriented macOS development environment built around
+Homebrew, GNU Stow, mise, and a single version-controlled source of truth.
 
 Cloning this repository changes nothing on the machine. The installer is a dry-run
 by default and refuses to overwrite existing files or unrelated symlinks.
 
 처음 사용하는 개발자는 먼저 [한국어 개발환경 설계 가이드](docs/design-guide.ko.md)를
 읽어 각 도구의 역할, 안전한 적용 순서, 기존 설정과 충돌할 때의 대응 방법을
-확인하세요.
+확인하세요. 실제 사용법은 [WezTerm, Neovim, and Herdr tutorial](docs/tutorial.md)에
+설명되어 있습니다.
+
+## Inspiration
+
+myagenterminal is inspired by [Kun Chen's dotfiles](https://github.com/kunchenguid/dotfiles),
+especially its reproducible terminal-first macOS environment, WezTerm and
+Neovim workflow, Herdr integration, and shared agent-policy model.
+
+This project adapts those ideas rather than mirroring that repository: it uses
+Homebrew, mise, and GNU Stow instead of a Nix-heavy system; keeps Claude Code
+and Codex publisher-managed; and leaves global agent-policy installation as a
+manual, user-controlled step.
 
 ## What is managed
 
@@ -155,6 +167,10 @@ Use `t` for tmux and `h` for Herdr. They are intentionally peers rather than a
 default nested stack. WezTerm's mux domains and workspaces are deliberately not
 configured; WezTerm acts only as the terminal frontend. tmux uses `Ctrl-a`; Herdr
 keeps its default `Ctrl-b` prefix.
+
+WezTerm keeps its tab bar visible at the top and shows macOS CPU and RAM usage,
+battery charge, and the current date and time on the right. The status refreshes
+every ten seconds; `BAT+` means the battery is charging.
 
 In Neovim:
 

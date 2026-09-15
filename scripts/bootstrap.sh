@@ -22,7 +22,7 @@ usage() {
   cat <<'USAGE'
 Usage: ./install.sh [options]
 
-Safely preview or apply this dotfiles repository.
+Safely preview or apply myagenterminal.
 
 Options:
   --apply          Create symlinks. Without this flag, only simulate changes.
@@ -111,5 +111,5 @@ stow_configs
 if [[ "${mode}" == "dry-run" ]]; then
   printf '\nNo changes were made. Re-run with --apply after reviewing the output.\n'
 else
-  printf '\nDotfiles links applied successfully. Open a new shell to load them.\n'
+  printf '\nmyagenterminal links applied successfully. Open a new shell to load them.\n'
 fi
