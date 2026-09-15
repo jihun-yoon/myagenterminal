@@ -34,7 +34,7 @@
 ```text
 ┌─────────────────────────────────────────────────────────┐
 │ 1. 패키지 계층                                           │
-│    Brewfile → Ghostty, Git, Neovim, tmux 등을 설치       │
+│    Brewfile → WezTerm, Git, Neovim, tmux 등을 설치       │
 │    Publisher installer → Claude Code와 Codex 설치        │
 ├─────────────────────────────────────────────────────────┤
 │ 2. 설정 계층                                             │
@@ -44,7 +44,7 @@
 │    zsh → mise / Starship / zoxide / fzf / Atuin         │
 ├─────────────────────────────────────────────────────────┤
 │ 4. 작업 계층                                             │
-│    Ghostty → tmux 또는 Herdr → shell / Neovim / agents  │
+│    WezTerm → tmux 또는 Herdr → shell / Neovim / agents  │
 ├─────────────────────────────────────────────────────────┤
 │ 5. 정책 계층                                             │
 │    global AGENTS.md + project AGENTS.md + 현재 요청     │
@@ -52,7 +52,7 @@
 ```
 
 계층을 분리한 이유는 문제가 생겼을 때 원인을 좁히기 쉽기 때문입니다. 예를 들어
-`node` 명령을 찾지 못하면 Ghostty 테마를 볼 필요가 없습니다. Homebrew가 mise를
+`node` 명령을 찾지 못하면 WezTerm 테마를 볼 필요가 없습니다. Homebrew가 mise를
 설치했는지, mise가 Node를 설치했는지, zsh가 mise를 활성화했는지만 확인하면 됩니다.
 
 ## 3. 먼저 알아둘 용어
@@ -78,7 +78,7 @@ Windows의 바로가기와 비슷하지만, 대부분의 프로그램은 symlink
 ```text
 ~/.config/nvim
         │
-        └── 가리킴 ──→ ~/dotfiles/nvim/.config/nvim
+        └── 가리킴 ──→ ~/Documents/Projects/myterminal/nvim/.config/nvim
 ```
 
 이 구조에서는 Neovim 설정을 수정하면 실제로 dotfiles 저장소 안의 파일이
@@ -108,7 +108,7 @@ Homebrew는 macOS 패키지 관리자입니다. `brew install tmux`처럼 프로
 
 ```ruby
 brew "tmux"       # 명령행 프로그램
-cask "ghostty"    # macOS 애플리케이션
+cask "wezterm"    # macOS 애플리케이션
 ```
 
 Homebrew는 프로그램 자체를 설치하고, Stow는 그 프로그램의 사용자 설정을
@@ -144,7 +144,7 @@ dotfiles/
 │   ├── bootstrap.sh
 │   ├── check.sh
 │   └── macos.sh
-├── ghostty/
+├── wezterm/
 ├── zsh/
 ├── starship/
 ├── atuin/
@@ -161,13 +161,13 @@ dotfiles/
 |---|---|
 | `Brewfile` | 설치할 명령행 도구와 macOS 앱 목록 |
 | `install.sh` | 사용자가 실행하는 안전한 진입점 |
-| `scripts/bootstrap.sh` | 옵션 처리, Stow 실행, agent 링크 생성 |
+| `scripts/bootstrap.sh` | 옵션 처리, Homebrew 확인, Stow 실행 |
 | `scripts/agents.sh` | Claude Code와 Codex의 native 설치·업데이트 관리 |
 | `scripts/check.sh` | 임시 홈에서 설치 방법을 검증 |
 | `scripts/macos.sh` | Finder와 키 반복 설정을 선택적으로 적용 |
 | `AGENTS.md` | 이 dotfiles 프로젝트에만 적용되는 작업 규칙 |
-| `agents/AGENTS.md` | 모든 프로젝트에서 사용할 전역 agent 규칙 |
-| `ghostty/`, `zsh/` 등 | 프로그램별 Stow 패키지 |
+| `agents/AGENTS.md` | 전역 agent 규칙을 직접 설정할 때 참고할 템플릿 |
+| `wezterm/`, `zsh/` 등 | 프로그램별 Stow 패키지 |
 
 ## 5. 설치 명령은 실제로 무엇을 하는가
 
@@ -198,11 +198,9 @@ simulation 경고가 있다면 실제 링크는 만들어지지 않았습니다.
 가장 큰 범위의 명령입니다.
 
 ```text
-Brewfile 패키지 설치
+Brewfile의 누락된 패키지만 설치 (`--no-upgrade`)
         ↓
 Stow 설정 링크 생성
-        ↓
-Codex와 Claude 전역 정책 링크 생성
 ```
 
 처음부터 이 명령을 실행하기보다 dry-run 결과를 먼저 읽는 것을 권장합니다.
@@ -240,10 +238,10 @@ npm으로 같은 CLI를 중복 설치하면 PATH 순서에 따라 다른 버전�
 
 ## 6. 터미널을 열었을 때의 흐름
 
-Ghostty를 실행하면 다음 순서로 환경이 준비됩니다.
+WezTerm을 실행하면 다음 순서로 환경이 준비됩니다.
 
 ```text
-Ghostty 실행
+WezTerm 실행
     ↓
 zsh 시작
     ↓
@@ -251,6 +249,9 @@ zsh 시작
     └── Apple Silicon 또는 Intel Homebrew 경로 활성화
     ↓
 ~/.zshrc
+    ├── zsh-completions: completion 후보 추가
+    ├── zsh-autosuggestions: 기록 기반 명령 제안
+    ├── zsh-syntax-highlighting: 입력 중 명령 구문 표시
     ├── mise: Node 같은 runtime 활성화
     ├── zoxide: 자주 가는 디렉터리 학습
     ├── fzf: fuzzy finder와 셸 단축키
@@ -261,6 +262,10 @@ zsh 시작
 `.zprofile`은 로그인 셸의 기반 환경을 준비하고, `.zshrc`는 대화형 셸에서 사용할
 도구와 alias를 준비합니다. 셸 스크립트 같은 비대화형 실행에서는 `.zshrc`의
 interactive 설정이 적용되지 않도록 방어 코드가 들어 있습니다.
+
+이 구성은 Oh My Zsh를 사용하지 않는 plain zsh입니다. completion 경로와 세 가지
+zsh 플러그인을 직접 초기화하여 어떤 구성 요소가 completion과 입력 표시를
+담당하는지 명확하게 유지합니다.
 
 주요 alias는 다음과 같습니다.
 
@@ -287,14 +292,18 @@ tree    디렉터리 트리
 기본 사용은 둘 중 하나를 선택하는 방식입니다.
 
 ```text
-Ghostty → tmux  → shell / Neovim / server
+WezTerm → tmux  → shell / Neovim / server
 
 또는
 
-Ghostty → Herdr → Claude / Codex / Neovim / tests
+WezTerm → Herdr → Claude / Codex / Neovim / tests
 ```
 
-`Ghostty → tmux → Herdr`처럼 항상 중첩하지 않는 이유는 pane, session, prefix key가
+WezTerm도 자체 mux와 workspace 기능을 제공하지만 이 설정에서는 활성화하지
+않습니다. WezTerm은 화면을 표시하는 terminal frontend 역할만 맡고, session과
+workspace는 tmux 또는 Herdr가 담당합니다.
+
+`WezTerm → tmux → Herdr`처럼 항상 중첩하지 않는 이유는 pane, session, prefix key가
 두 겹이 되어 초보자에게 혼란을 주기 때문입니다. 이 설정에서 tmux prefix는
 `Ctrl-a`, Herdr는 기본 `Ctrl-b`입니다.
 
@@ -343,17 +352,27 @@ coding agent에게 전달되는 지침은 다음처럼 쌓입니다.
 
 ### 전역 정책
 
-`agents/AGENTS.md`가 원본입니다. 설치기는 같은 원본을 다음 위치에 연결합니다.
+`agents/AGENTS.md`는 버전 관리되는 전역 정책 참고 템플릿입니다. 설치기는 이
+파일을 어떤 agent 설정 위치에도 복사하거나 연결하거나 병합하지 않습니다.
+전역 정책은 동작 범위가 넓고 기존 개인 정책과 의미상 충돌할 수 있기 때문입니다.
+
+실제로 사용하는 파일은 사용자가 직접 관리합니다.
 
 ```text
-agents/AGENTS.md
-    ├──→ ~/.codex/AGENTS.md
-    └──→ ~/.claude/CLAUDE.md
+agents/AGENTS.md                 참고 템플릿
+
+~/.codex/AGENTS.md               Codex에서 직접 관리
+~/.claude/CLAUDE.md              Claude Code에서 직접 관리
 ```
 
 여기에는 모든 프로젝트에서 지키고 싶은 일반 원칙을 둡니다. 예를 들면 테스트 없이
 성공했다고 말하지 않기, 비밀정보를 노출하지 않기, 요청 없이 commit하지 않기
 등입니다.
+
+기존 파일이 있다면 템플릿으로 덮어쓰지 말고 두 파일을 나란히 비교한 뒤 필요한
+규칙만 직접 옮깁니다. 기존 파일이 없더라도 먼저 템플릿 전체를 읽고 자신에게 맞지
+않는 규칙을 수정한 뒤 각 도구의 설정 파일을 만듭니다. 템플릿 변경은 실제 전역
+설정에 자동으로 반영되지 않습니다.
 
 ### 프로젝트 정책
 
@@ -384,7 +403,7 @@ Codex의 정확한 탐색 순서와 override 규칙은 [OpenAI 공식 AGENTS.md 
 
 ```bash
 ls -la ~/.zshrc ~/.zprofile ~/.gitconfig 2>/dev/null
-ls -la ~/.config/nvim ~/.config/ghostty 2>/dev/null
+ls -la ~/.config/nvim ~/.config/wezterm 2>/dev/null
 ```
 
 파일이 보이는 것은 문제가 아닙니다. dry-run에서 충돌로 보고될 가능성이 있다는
@@ -401,7 +420,7 @@ Stow는 미리보기와 링크 생성에 필요한 도구입니다.
 ### 3단계: dry-run 실행
 
 ```bash
-cd ~/dotfiles
+cd ~/Documents/Projects/myterminal
 ./install.sh
 ```
 
@@ -410,16 +429,9 @@ cd ~/dotfiles
 
 ### 4단계: 패키지 목록 검토
 
-`Brewfile`을 열어 실제로 원하는 앱인지 확인합니다. 이 저장소는 GUI editor로
-Zed를 선택했습니다. VS Code를 원한다면 적용 전에 다음 줄을 바꿀 수 있습니다.
-
-```ruby
-# 기존
-cask "zed"
-
-# 변경
-cask "visual-studio-code"
-```
+`Brewfile`을 열어 실제로 원하는 앱인지 확인합니다. GUI editor는 기존 설치와
+개인 선택을 존중하기 위해 이 저장소에서 자동 설치하지 않습니다. Neovim은
+terminal review editor로 설치하지만 Zed나 VS Code는 사용자가 별도로 관리합니다.
 
 ### 5단계: 원하는 범위만 적용
 
@@ -437,7 +449,7 @@ cask "visual-studio-code"
 
 ### 6단계: 새 셸 확인
 
-Ghostty를 완전히 새로 열고 다음 명령을 확인합니다.
+WezTerm을 완전히 새로 열고 다음 명령을 확인합니다.
 
 ```bash
 git --version
@@ -468,7 +480,7 @@ existing target is neither a link nor a directory: .zshrc
 이때 기존 파일을 바로 삭제하지 마세요. 먼저 차이를 읽습니다.
 
 ```bash
-diff -u ~/.zshrc ~/dotfiles/zsh/.zshrc
+diff -u ~/.zshrc ~/Documents/Projects/myterminal/zsh/.zshrc
 ```
 
 그다음 세 가지 중 하나를 선택합니다.
@@ -533,7 +545,7 @@ brew "shellcheck"
 그다음 패키지만 적용하려면 다음을 실행합니다.
 
 ```bash
-brew bundle --file ~/dotfiles/Brewfile
+brew bundle --no-upgrade --file ~/Documents/Projects/myterminal/Brewfile
 ```
 
 ### Neovim 플러그인 추가하기
@@ -626,11 +638,11 @@ Homebrew, Stow, mise 각각의 역할을 이해한 뒤 더 강한 재현성이 �
 ## 16. 적용 전 최종 체크리스트
 
 - [ ] `Brewfile`의 앱을 모두 원하는지 읽었다.
-- [ ] Zed와 VS Code 중 사용할 editor를 선택했다.
+- [ ] 필요한 GUI editor는 이 저장소와 별도로 준비했다.
 - [ ] `./install.sh` dry-run 결과를 읽었다.
 - [ ] 기존 `.zshrc`, `.gitconfig`, Neovim 설정의 충돌 여부를 확인했다.
 - [ ] 기존 설정을 삭제하지 않고 필요한 내용을 병합하거나 백업했다.
-- [ ] `agents/AGENTS.md`의 정책이 내 작업 방식에 맞는지 읽었다.
+- [ ] `agents/AGENTS.md`를 참고해 전역 agent 정책을 직접 설정했다.
 - [ ] agent native installer의 dry-run 결과를 확인했다.
 - [ ] Claude Code와 Codex를 Homebrew/npm으로 중복 설치하지 않았다.
 - [ ] 실제 적용에는 `--apply`가 필요하다는 점을 이해했다.

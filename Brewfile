@@ -11,6 +11,9 @@ brew "starship"
 brew "zoxide"
 brew "fzf"
 brew "atuin"
+brew "zsh-autosuggestions"
+brew "zsh-syntax-highlighting"
+brew "zsh-completions"
 
 brew "ripgrep"
 brew "fd"
@@ -21,12 +24,10 @@ brew "git-delta"
 
 brew "mise"
 brew "uv"
-brew "pnpm"
 brew "neovim"
 
-cask "ghostty"
+cask "wezterm"
 cask "font-jetbrains-mono"
-cask "zed"
 
 # Claude Code and Codex use their publishers' native installers.
 # Manage them with `./scripts/agents.sh` instead of Homebrew.

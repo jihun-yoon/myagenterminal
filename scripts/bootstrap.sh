@@ -8,7 +8,7 @@ install_packages="false"
 
 stow_packages=(
   atuin
-  ghostty
+  wezterm
   git
   herdr
   mise
@@ -74,7 +74,7 @@ manage_packages() {
 
   if [[ "${mode}" == "apply" ]]; then
     printf 'Installing packages declared in %s\n' "${repo_dir}/Brewfile"
-    brew bundle --file "${repo_dir}/Brewfile"
+    brew bundle --no-upgrade --file "${repo_dir}/Brewfile"
     return
   fi
 
@@ -105,38 +105,8 @@ stow_configs() {
   stow "${stow_args[@]}" "${stow_packages[@]}"
 }
 
-link_agent_adapter() {
-  local source_path="$1"
-  local target_path="$2"
-  local target_dir
-  target_dir="$(dirname -- "${target_path}")"
-
-  if [[ -L "${target_path}" ]]; then
-    local current_source
-    current_source="$(readlink "${target_path}")"
-    if [[ "${current_source}" == "${source_path}" ]]; then
-      printf 'Already linked: %s\n' "${target_path}"
-      return 0
-    fi
-    die "existing symlink points elsewhere: ${target_path} -> ${current_source}"
-  fi
-
-  [[ ! -e "${target_path}" ]] || die "existing file would conflict: ${target_path}"
-
-  if [[ "${mode}" == "dry-run" ]]; then
-    printf 'Would link: %s -> %s\n' "${target_path}" "${source_path}"
-    return 0
-  fi
-
-  mkdir -p "${target_dir}"
-  ln -s "${source_path}" "${target_path}"
-  printf 'Linked: %s -> %s\n' "${target_path}" "${source_path}"
-}
-
 manage_packages
 stow_configs
-link_agent_adapter "${repo_dir}/agents/AGENTS.md" "${target_home}/.codex/AGENTS.md"
-link_agent_adapter "${repo_dir}/agents/AGENTS.md" "${target_home}/.claude/CLAUDE.md"
 
 if [[ "${mode}" == "dry-run" ]]; then
   printf '\nNo changes were made. Re-run with --apply after reviewing the output.\n'

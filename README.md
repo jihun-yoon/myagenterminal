@@ -12,13 +12,13 @@ by default and refuses to overwrite existing files or unrelated symlinks.
 
 ## What is managed
 
-- Terminal and shell: Ghostty, zsh, Starship, zoxide, fzf, Atuin
+- Terminal and shell: WezTerm, plain zsh, Starship, zoxide, fzf, Atuin,
+  autosuggestions, syntax highlighting, and completions
 - Workspaces: tmux for general/remote work, Herdr for agent-heavy work
 - CLI: ripgrep, fd, bat, eza, jq, delta, GitHub CLI
-- Runtimes: mise with Node 24; uv for Python projects; pnpm for JavaScript
+- Runtimes: mise with Node 24 and pnpm 10.28.0; uv for Python projects
 - Review editor: Neovim with Gitsigns, Neogit, Snacks, and which-key
-- Agents: publisher-native Claude Code and Codex CLI, plus one global policy
-- GUI editor: Zed (replace it with `visual-studio-code` in `Brewfile` if preferred)
+- Agents: publisher-native Claude Code and Codex CLI, plus a global policy template
 
 ## Repository layout
 
@@ -27,13 +27,13 @@ by default and refuses to overwrite existing files or unrelated symlinks.
 ├── Brewfile                 package inventory
 ├── install.sh               safe bootstrap entry point
 ├── AGENTS.md                instructions for this repository
-├── agents/AGENTS.md         canonical global agent policy
+├── agents/AGENTS.md         global policy reference template
 ├── scripts/
 │   ├── bootstrap.sh         dry-run/apply implementation
 │   ├── agents.sh            publisher-native agent CLI management
 │   ├── check.sh             isolated installer verification
 │   └── macos.sh             optional macOS defaults, dry-run by default
-├── ghostty/                 Stow packages mirror the home directory
+├── wezterm/                 Stow packages mirror the home directory
 ├── zsh/
 ├── starship/
 ├── atuin/
@@ -68,7 +68,8 @@ After reviewing the dry-run:
 ./install.sh --apply
 ```
 
-To install the Brewfile packages and then create links:
+To install missing Brewfile packages without bulk-upgrading existing tools, and
+then create links:
 
 ```bash
 ./install.sh --apply --packages
@@ -114,6 +115,9 @@ Override these defaults for a single operation with `CLAUDE_CHANNEL` or
 `CODEX_RELEASE`. Do not install the same CLI through Homebrew or npm as well; the
 manager stops when PATH points to a conflicting installation.
 
+Node and pnpm are declared in mise rather than installed directly by Homebrew.
+Projects can override either version with their own mise or package metadata.
+
 Official setup references:
 
 - https://code.claude.com/docs/en/setup
@@ -121,7 +125,12 @@ Official setup references:
 
 ## Agent instruction layering
 
-`agents/AGENTS.md` is the canonical global policy. The installer links it to:
+`agents/AGENTS.md` is a version-controlled reference for a global policy. The
+installer deliberately does not copy, merge, or link it into either agent's home
+directory. Review it and configure each agent manually so an existing personal
+policy is never replaced or given conflicting instructions automatically.
+
+Relevant user-owned files include:
 
 ```text
 ~/.codex/AGENTS.md
@@ -133,13 +142,19 @@ the repository root toward the working directory. Keep project commands,
 architecture, and domain rules in each project's committed `AGENTS.md`; keep
 vendor-specific exceptions small and local.
 
+If one of the user-owned files already exists, compare it with
+`agents/AGENTS.md` and manually copy only the rules you want. Do not replace the
+existing file blindly. Changes to the template are not propagated automatically.
+
 Official Codex reference:
 https://developers.openai.com/codex/guides/agents-md/
 
 ## Daily use
 
 Use `t` for tmux and `h` for Herdr. They are intentionally peers rather than a
-default nested stack. tmux uses `Ctrl-a`; Herdr keeps its default `Ctrl-b` prefix.
+default nested stack. WezTerm's mux domains and workspaces are deliberately not
+configured; WezTerm acts only as the terminal frontend. tmux uses `Ctrl-a`; Herdr
+keeps its default `Ctrl-b` prefix.
 
 In Neovim:
 
@@ -157,4 +172,5 @@ The check runs in an isolated temporary home directory:
 ```
 
 It validates shell syntax, dry-run behavior, first application, idempotency, and
-the expected agent adapter links without touching the real home directory.
+that existing Codex and Claude instruction files remain unchanged, without touching
+the real home directory.

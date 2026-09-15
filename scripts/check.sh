@@ -25,12 +25,16 @@ if HOME="${conflict_home}" PATH="${conflict_home}/bin:/usr/bin:/bin" \
   exit 1
 fi
 
+mkdir -p "${fixture_home}/.codex" "${fixture_home}/.claude"
+printf '%s\n' '# Existing Codex policy' > "${fixture_home}/.codex/AGENTS.md"
+printf '%s\n' '# Existing Claude policy' > "${fixture_home}/.claude/CLAUDE.md"
+
 "${repo_dir}/install.sh" --target "${fixture_home}"
 "${repo_dir}/install.sh" --target "${fixture_home}" --apply
 "${repo_dir}/install.sh" --target "${fixture_home}"
 
 for target in \
-  "${fixture_home}/.config/ghostty/config" \
+  "${fixture_home}/.config/wezterm/wezterm.lua" \
   "${fixture_home}/.config/nvim/init.lua"; do
   [[ -e "${target}" ]] || {
     printf 'Expected managed file missing: %s\n' "${target}" >&2
@@ -38,14 +42,10 @@ for target in \
   }
 done
 
-for target in \
-  "${fixture_home}/.codex/AGENTS.md" \
-  "${fixture_home}/.claude/CLAUDE.md"; do
-  [[ -L "${target}" ]] || {
-    printf 'Expected agent adapter symlink missing: %s\n' "${target}" >&2
-    exit 1
-  }
-done
+[[ "$(< "${fixture_home}/.codex/AGENTS.md")" == '# Existing Codex policy' ]]
+[[ "$(< "${fixture_home}/.claude/CLAUDE.md")" == '# Existing Claude policy' ]]
+[[ ! -L "${fixture_home}/.codex/AGENTS.md" ]]
+[[ ! -L "${fixture_home}/.claude/CLAUDE.md" ]]
 
 touch "${conflict_home}/.zshrc"
 if "${repo_dir}/install.sh" --target "${conflict_home}" >/dev/null 2>&1; then

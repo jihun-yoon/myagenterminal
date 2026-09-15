@@ -24,3 +24,5 @@
 	l = log --graph --decorate --pretty=oneline --abbrev-commit
 	wt = worktree
 	wl = worktree list
+[include]
+	path = ~/.gitconfig.local
