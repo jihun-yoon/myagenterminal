@@ -22,6 +22,30 @@ Homebrew, mise, and GNU Stow instead of a Nix-heavy system; keeps Claude Code
 and Codex publisher-managed; and leaves global agent-policy installation as a
 manual, user-controlled step.
 
+Kun Chen's setup creates a stable `~/.dotfiles` link and uses Nix Home Manager's
+`mkOutOfStoreSymlink` for live configuration. myagenterminal keeps the same
+single-source-of-truth principle but links each declared package directly with
+GNU Stow. We chose Stow because its behavior is visible in a dry-run, it refuses
+ordinary-file conflicts, and a beginner can understand or reverse the setup
+without first learning Nix, flakes, nix-darwin, and Home Manager.
+
+## Repository location is part of the installation
+
+Choose a permanent clone location before running `./install.sh --apply`. Stow
+links the home-directory paths directly to files inside that clone. Do not move,
+rename, or delete the repository after applying it; doing so leaves dangling
+links and makes the affected applications behave as if their configuration is
+missing.
+
+Cloning alone still changes nothing. The location becomes significant only
+after `--apply` creates the links. If relocation is unavoidable, preview and
+repair the Stow links from the new location before opening a new shell or relying
+on the managed tools.
+
+The linked directories contain reproducible configuration, not runtime state.
+Machine-generated Herdr session data and plugin locks are ignored by Git so they
+cannot be mistaken for portable configuration.
+
 ## What is managed
 
 - Terminal and shell: WezTerm, plain zsh, Starship, zoxide, fzf, Atuin,
@@ -74,7 +98,7 @@ status can also be checked without installing anything:
 
 ## Apply explicitly
 
-After reviewing the dry-run:
+After choosing a permanent repository location and reviewing the dry-run:
 
 ```bash
 ./install.sh --apply
@@ -171,6 +195,16 @@ keeps its default `Ctrl-b` prefix.
 WezTerm keeps its tab bar visible at the top and shows macOS CPU and RAM usage,
 battery charge, and the current date and time on the right. The status refreshes
 every ten seconds; `BAT+` means the battery is charging.
+
+Herdr sends agent-completion and attention notifications through WezTerm.
+Notifications are forwarded even while WezTerm is focused, and Herdr keeps
+sound alerts enabled for agents in background workspaces. WezTerm may request
+provisional macOS authorization without displaying a permission dialog, so
+check Notification Center after the first test. Test delivery with:
+
+```bash
+herdr notification show "myagenterminal" --body "Notifications are working" --sound done
+```
 
 In Neovim:
 

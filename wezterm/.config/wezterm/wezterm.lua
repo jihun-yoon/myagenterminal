@@ -77,6 +77,9 @@ config.tab_bar_at_bottom = false
 config.use_fancy_tab_bar = false
 config.status_update_interval = 10000
 
+-- Always forward terminal-generated notifications, including from a focused window.
+config.notification_handling = "AlwaysShow"
+
 config.colors = {
   tab_bar = {
     background = colors.background,

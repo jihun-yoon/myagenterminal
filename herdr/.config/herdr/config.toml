@@ -1,3 +1,12 @@
 # Herdr works with its defaults. Keep this tracked file intentionally minimal.
 # Generate the complete current schema with: herdr --default-config
 # Reload future changes with: herdr server reload-config
+
+# Let WezTerm deliver agent-state notifications through macOS.
+[ui.toast]
+delivery = "terminal"
+delay_seconds = 1
+
+# Notify when agents finish or need attention in background workspaces.
+[ui.sound]
+enabled = true

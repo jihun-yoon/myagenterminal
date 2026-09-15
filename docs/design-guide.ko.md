@@ -20,6 +20,35 @@ Homebrew, mise, GNU Stow를 사용하고, Claude Code와 Codex는 publisher의 n
 installer로 관리합니다. 또한 전역 agent 정책은 자동으로 덮어쓰거나 연결하지 않고
 사용자가 직접 검토하고 적용하도록 설계했습니다.
 
+원본은 저장소를 `~/.dotfiles`에 연결한 뒤 Nix Home Manager의
+`mkOutOfStoreSymlink`로 실제 설정을 저장소에 연결합니다. myagenterminal도
+"저장소가 하나의 원본"이라는 원칙은 유지하지만, 각 설정 패키지를 GNU Stow로 직접
+연결합니다. Stow를 선택한 이유는 dry-run에서 생성될 링크가 그대로 보이고, 기존
+일반 파일과 충돌하면 중단하며, Nix·flake·nix-darwin·Home Manager를 먼저 배우지
+않아도 설치와 복구 원리를 이해할 수 있기 때문입니다.
+
+| 구분 | Kun Chen의 dotfiles | myagenterminal |
+|---|---|---|
+| 설정 연결 | Home Manager `mkOutOfStoreSymlink` | GNU Stow |
+| 시스템·패키지 | Nix, nix-darwin, Homebrew | Homebrew, mise, 선택적 macOS script |
+| Claude/Codex | 선언형 환경에 통합 | publisher native installer |
+| 전역 agent 정책 | 여러 agent 위치에 자동 연결 | 참고 템플릿만 제공하고 수동 적용 |
+| 우선순위 | 강한 선언형 재현성 | 초보자의 이해, 기존 환경 보존, 명시적 적용 |
+
+### 저장소 위치는 설치의 일부입니다
+
+`./install.sh --apply`를 실행하기 전에 clone 위치를 영구적으로 정해야 합니다.
+Stow가 만드는 링크는 clone 안의 실제 경로를 가리키므로, 적용 후 저장소를 이동하거나
+이름을 바꾸거나 삭제하면 링크가 끊어집니다. 그 결과 zsh, Git, WezTerm, Neovim
+등은 설정 파일이 없는 것처럼 동작할 수 있습니다.
+
+clone만 한 상태에서는 위치가 시스템에 영향을 주지 않습니다. `--apply`로 링크를
+만든 뒤부터 위치가 설치 계약의 일부가 됩니다. 불가피하게 옮겨야 한다면 새 위치에서
+링크를 검토하고 복구하기 전까지 managed 설정을 신뢰하지 마세요.
+
+또한 연결된 디렉터리에 Herdr가 만드는 session 정보와 plugin lock은 컴퓨터별
+runtime 상태입니다. 이는 재현 가능한 설정이 아니므로 Git에서 제외합니다.
+
 ## 1. 우리가 해결하려는 문제
 
 새 Mac을 설정한다고 생각해 봅시다. 보통은 다음 작업을 하나씩 수동으로 합니다.
@@ -320,6 +349,17 @@ workspace는 tmux 또는 Herdr가 담당합니다.
 두 겹이 되어 초보자에게 혼란을 주기 때문입니다. 이 설정에서 tmux prefix는
 `Ctrl-a`, Herdr는 기본 `Ctrl-b`입니다.
 
+Herdr는 agent가 작업을 마치거나 사용자 입력이 필요해진 상태를 감지해 WezTerm으로
+terminal notification을 전달합니다. WezTerm은 현재 창에 focus가 있어도 알림을
+macOS로 전달하고, Herdr는 background workspace의 agent 상태 변화에 sound를
+재생합니다. WezTerm은 macOS에 provisional 알림 권한을 요청할 수 있으므로 최초에는
+권한 대화상자가 나타나지 않고 알림 센터에 조용히 표시될 수 있습니다. 다음 명령으로
+전달 경로를 직접 시험한 뒤 배너가 없다면 알림 센터도 확인합니다.
+
+```bash
+herdr notification show "myagenterminal" --body "Notifications are working" --sound done
+```
+
 ## 8. Neovim을 변경 검토 도구로 사용하기
 
 Neovim 설정은 모든 기능을 한 번에 넣지 않고 agent가 만든 변경을 검토하는 데
@@ -438,7 +478,8 @@ cd /path/to/myagenterminal
 ```
 
 충돌이 없다면 어떤 링크가 만들어질지 확인합니다. 충돌이 있다면 다음 절의 안전한
-처리 방법을 따릅니다.
+처리 방법을 따릅니다. 이 경로를 영구 위치로 결정한 뒤에만 `--apply`를 실행합니다.
+적용 후에는 저장소 디렉터리를 이동하거나 이름을 바꾸지 않습니다.
 
 ### 4단계: 패키지 목록 검토
 
@@ -655,6 +696,7 @@ Homebrew, Stow, mise 각각의 역할을 이해한 뒤 더 강한 재현성이 �
 - [ ] `./install.sh` dry-run 결과를 읽었다.
 - [ ] 기존 `.zshrc`, `.gitconfig`, Neovim 설정의 충돌 여부를 확인했다.
 - [ ] 기존 설정을 삭제하지 않고 필요한 내용을 병합하거나 백업했다.
+- [ ] 저장소의 영구 위치를 정했고 적용 후 이동하거나 이름을 바꾸지 않을 것이다.
 - [ ] `agents/AGENTS.md`를 참고해 전역 agent 정책을 직접 설정했다.
 - [ ] agent native installer의 dry-run 결과를 확인했다.
 - [ ] Claude Code와 Codex를 Homebrew/npm으로 중복 설치하지 않았다.

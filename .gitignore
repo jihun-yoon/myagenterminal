@@ -5,3 +5,5 @@
 # Herdr writes runtime data beside config.toml; only the configuration is tracked.
 herdr/.config/herdr/*.log
 herdr/.config/herdr/sessions/
+herdr/.config/herdr/.plugins.lock
+herdr/.config/herdr/session.json

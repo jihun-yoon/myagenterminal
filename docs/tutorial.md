@@ -6,6 +6,11 @@ editors.
 
 > The tool is named **Herdr**, not Herder. The shell alias `h` starts it.
 
+This tutorial assumes the repository has remained in the same location where
+`./install.sh --apply` was run. The active configuration consists of Stow links
+back into that clone. Moving, renaming, or deleting the repository afterward
+breaks those links; choose a permanent location before applying the setup.
+
 ## 1. The mental model
 
 The three tools have different jobs:
@@ -362,7 +367,47 @@ herdr server stop
 
 Do not use `server stop` merely to leave the interface; detach instead.
 
-## 10. Optional agent integrations
+## 10. Agent completion notifications
+
+Herdr is the agent-aware notification source, while WezTerm delivers the macOS
+notification. The configured flow is:
+
+```text
+Claude Code or Codex changes state
+        ↓
+Herdr recognizes done or needs-attention
+        ↓
+Herdr emits a terminal notification
+        ↓
+WezTerm asks macOS to display it
+```
+
+Notifications are forwarded even while the same WezTerm window is focused so
+agent completion and attention events are not silently discarded. Herdr sound
+also remains enabled for agent changes in background workspaces.
+
+WezTerm can initially request provisional macOS notification authorization.
+macOS does not show a permission dialog for provisional authorization and may
+place the first notification quietly in Notification Center. Test the complete
+route, then look in Notification Center if no banner appears:
+
+```bash
+herdr notification show "myagenterminal" --body "Notifications are working" --sound done
+```
+
+The repository enables notifications even while WezTerm is focused with:
+
+```lua
+config.notification_handling = "AlwaysShow"
+```
+
+Reload WezTerm with `Command-r` after changing this setting manually.
+
+This path is more precise than reacting to every terminal bell: Herdr knows
+which supported agent changed state, whereas WezTerm alone only knows that a
+program emitted a notification or bell sequence.
+
+## 11. Optional agent integrations
 
 Herdr can detect supported agents from their terminal output. Optional native
 integrations can provide richer lifecycle state or session restoration.
@@ -384,7 +429,7 @@ These integrations are separate from `AGENTS.md`, but they do write hook files
 inside the agents' configuration directories. Treat them as an explicit,
 optional setup step rather than part of the automatic myagenterminal installation.
 
-## 11. Troubleshooting
+## 12. Troubleshooting
 
 ### A Herdr shortcut does nothing
 
@@ -418,6 +463,15 @@ the myagenterminal repository, the corresponding `*.log` files and named-session
 runtime directory are explicitly ignored by Git; only `config.toml` should be
 tracked.
 
+### Agent completion notifications do not appear
+
+Confirm that WezTerm notifications are allowed in macOS System Settings. Reload
+the WezTerm configuration with `Command-r`, reload Herdr with
+`herdr server reload-config`, and run the notification test from section 10.
+The configured `AlwaysShow` mode also forwards notifications while the WezTerm
+window is focused. On first use, provisional authorization may place the alert
+quietly in Notification Center instead of showing a banner.
+
 ### Neovim seems stuck
 
 Press `Esc`, then decide whether to save:
@@ -436,7 +490,7 @@ restart WezTerm and validate the configuration with:
 wezterm --config-file ~/.config/wezterm/wezterm.lua ls-fonts >/dev/null
 ```
 
-## 12. A small practice exercise
+## 13. A small practice exercise
 
 Use a disposable Git repository:
 
