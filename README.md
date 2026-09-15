@@ -192,9 +192,11 @@ default nested stack. WezTerm's mux domains and workspaces are deliberately not
 configured; WezTerm acts only as the terminal frontend. tmux uses `Ctrl-a`; Herdr
 keeps its default `Ctrl-b` prefix.
 
-WezTerm keeps its tab bar visible at the top and shows macOS CPU and RAM usage,
-battery charge, and the current date and time on the right. The status refreshes
-every ten seconds; `BAT+` means the battery is charging.
+WezTerm keeps its tab bar visible at the top and shows macOS CPU activity,
+non-cache memory use, battery charge, and the current date and time on the right.
+The `MEM` value counts anonymous application memory, wired memory, and physical
+compressor pages while excluding reclaimable file-backed cache. The status
+refreshes every ten seconds; `BAT+` means the battery is charging.
 
 Herdr sends agent-completion and attention notifications through WezTerm.
 Notifications are forwarded even while WezTerm is focused, and Herdr keeps

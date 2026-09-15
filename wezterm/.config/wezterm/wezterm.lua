@@ -19,25 +19,27 @@ local function system_metrics()
       cpu_sum=$(/bin/ps -A -o %cpu= | /usr/bin/awk '{sum += $1} END {print sum + 0}')
       cores=$(/usr/sbin/sysctl -n hw.logicalcpu)
       total_bytes=$(/usr/sbin/sysctl -n hw.memsize)
-      available_bytes=$(/usr/bin/vm_stat | /usr/bin/awk '
+      used_bytes=$(/usr/bin/vm_stat | /usr/bin/awk '
         /page size of/ { gsub(/[^0-9]/, "", $8); page_size = $8 }
-        /Pages free:/ { gsub(/[^0-9]/, "", $3); free = $3 }
-        /Pages speculative:/ { gsub(/[^0-9]/, "", $3); speculative = $3 }
-        END { printf "%.0f", (free + speculative) * page_size }
+        /Anonymous pages:/ { gsub(/[^0-9]/, "", $3); anonymous = $3 }
+        /Pages wired down:/ { gsub(/[^0-9]/, "", $4); wired = $4 }
+        /Pages occupied by compressor:/ { gsub(/[^0-9]/, "", $5); compressed = $5 }
+        END { printf "%.0f", (anonymous + wired + compressed) * page_size }
       ')
       /usr/bin/awk -v cpu_sum="$cpu_sum" -v cores="$cores" \
-        -v total_bytes="$total_bytes" -v available_bytes="$available_bytes" \
+        -v total_bytes="$total_bytes" -v used_bytes="$used_bytes" \
         'BEGIN {
           cpu = cores > 0 ? cpu_sum / cores : 0
           if (cpu > 100) cpu = 100
-          ram = total_bytes > 0 ? 100 * (1 - available_bytes / total_bytes) : 0
-          printf "CPU %.0f%%  RAM %.0f%%", cpu, ram
+          mem = total_bytes > 0 ? 100 * used_bytes / total_bytes : 0
+          if (mem > 100) mem = 100
+          printf "CPU %.0f%%  MEM %.0f%%", cpu, mem
         }'
     ]],
   })
 
   if not success then
-    return "CPU --  RAM --"
+    return "CPU --  MEM --"
   end
 
   return stdout:gsub("%s+$", "")

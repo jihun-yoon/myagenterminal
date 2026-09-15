@@ -41,12 +41,14 @@ The top bar contains WezTerm tabs on the left and system information on the
 right:
 
 ```text
-[1. zsh]                         CPU 12%  RAM 83% | BAT+ 72% | Tue Sep 15  14:30
+[1. zsh]                         CPU 12%  MEM 62% | BAT+ 72% | Tue Sep 15  14:30
 ```
 
 - `CPU` is total CPU activity normalized across the logical CPU cores.
-- `RAM` is occupied physical memory. A high value is common because macOS uses
-  otherwise-idle memory as cache.
+- `MEM` is non-cache memory use: anonymous application memory, wired memory,
+  and physical pages occupied by compressed memory. It excludes file-backed
+  cache that macOS can reclaim for applications, so it is more useful than
+  simply subtracting free pages from total RAM.
 - `BAT+` means the battery is charging; `BAT` means it is not charging.
 - The display refreshes every ten seconds.
 
