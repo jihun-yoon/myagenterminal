@@ -3,7 +3,7 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
 local colors = {
-  background = "#15191f",
+  background = "#14191f",
   system = "#252a31",
   battery = "#343a43",
   clock = "#4a515c",
@@ -72,13 +72,14 @@ end)
 
 -- Match the saved iTerm2 Default profile: JetBrainsMono Nerd Font Mono, 15pt.
 config.font = wezterm.font("JetBrainsMono Nerd Font Mono")
-config.font_size = 15.0
+config.font_size = 16.0
 config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
 
 config.enable_tab_bar = true
 config.hide_tab_bar_if_only_one_tab = false
 config.tab_bar_at_bottom = false
 config.use_fancy_tab_bar = false
+config.tab_max_width = 32
 config.status_update_interval = 10000
 
 -- Always forward terminal-generated notifications, including from a focused window.
@@ -86,7 +87,7 @@ config.notification_handling = "AlwaysShow"
 
 config.colors = {
   foreground = "#dcdcdc",
-  background = "#15191f",
+  background = "#14191f",
   cursor_bg = "#ffffff",
   cursor_fg = "#000000",
   selection_bg = "#b3d7ff",
