@@ -11,6 +11,15 @@ local colors = {
   muted = "#a6a6a6",
 }
 
+-- Open local file hyperlinks with their macOS default application.
+wezterm.on("open-uri", function(_, _, uri)
+  if uri:find("^file:") == 1 then
+    local url = wezterm.url.parse(uri)
+    wezterm.open_with(url.file_path)
+    return false
+  end
+end)
+
 local function system_metrics()
   local success, stdout = wezterm.run_child_process({
     "/bin/sh",
