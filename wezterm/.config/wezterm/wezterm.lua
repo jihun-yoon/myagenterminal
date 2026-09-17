@@ -85,6 +85,16 @@ config.status_update_interval = 10000
 -- Move the active WezTerm pane into its own window without using a shell.
 config.keys = {
   {
+    key = "UpArrow",
+    mods = "CMD",
+    action = wezterm.action.ScrollByPage(-1),
+  },
+  {
+    key = "DownArrow",
+    mods = "CMD",
+    action = wezterm.action.ScrollByPage(1),
+  },
+  {
     key = "m",
     mods = "CMD|SHIFT",
     action = wezterm.action_callback(function(_, pane)
