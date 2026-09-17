@@ -82,6 +82,17 @@ config.use_fancy_tab_bar = false
 config.tab_max_width = 32
 config.status_update_interval = 10000
 
+-- Move the active WezTerm pane into its own window without using a shell.
+config.keys = {
+  {
+    key = "m",
+    mods = "CMD|SHIFT",
+    action = wezterm.action_callback(function(_, pane)
+      pane:move_to_new_window()
+    end),
+  },
+}
+
 -- Always forward terminal-generated notifications, including from a focused window.
 config.notification_handling = "AlwaysShow"
 
