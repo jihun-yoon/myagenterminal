@@ -176,6 +176,9 @@ config.window_padding = {
   bottom = 8,
 }
 
+-- Let Command-click bypass app mouse reporting and open terminal hyperlinks.
+config.bypass_mouse_reporting_modifiers = "CMD"
+
 config.window_close_confirmation = "NeverPrompt"
 
 -- Treat both macOS Option keys as Alt for terminal shortcuts.
