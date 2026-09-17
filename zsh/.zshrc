@@ -35,9 +35,9 @@ alias t="tmux"
 alias h="herdr"
 alias v="nvim"
 alias cat="bat"
-alias ls="eza --group-directories-first"
-alias ll="eza --long --all --group --git --group-directories-first"
-alias tree="eza --tree --group-directories-first"
+alias ls="eza --hyperlink --group-directories-first"
+alias ll="eza --hyperlink --long --all --group --git --group-directories-first"
+alias tree="eza --hyperlink --tree --group-directories-first"
 
 # zsh-syntax-highlighting must be sourced after other interactive integrations.
 if [[ -n "${brew_prefix}" && \
