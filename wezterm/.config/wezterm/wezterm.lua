@@ -132,6 +132,15 @@ config.keys = {
   },
 }
 
+-- Select a specific WezTerm window with Command-Option-1..9.
+for index = 1, 9 do
+  table.insert(config.keys, {
+    key = tostring(index),
+    mods = "CMD|ALT",
+    action = wezterm.action.ActivateWindow(index - 1),
+  })
+end
+
 -- Always forward terminal-generated notifications, including from a focused window.
 config.notification_handling = "AlwaysShow"
 
