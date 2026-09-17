@@ -95,6 +95,16 @@ config.keys = {
     action = wezterm.action.ScrollByPage(1),
   },
   {
+    key = "UpArrow",
+    mods = "CMD|SHIFT",
+    action = wezterm.action.ScrollByLine(-3),
+  },
+  {
+    key = "DownArrow",
+    mods = "CMD|SHIFT",
+    action = wezterm.action.ScrollByLine(3),
+  },
+  {
     key = "m",
     mods = "CMD|SHIFT",
     action = wezterm.action_callback(function(_, pane)
