@@ -20,6 +20,27 @@ wezterm.on("open-uri", function(_, _, uri)
   end
 end)
 
+-- Show the same window number used by Command-Option-1..9 in the title bar.
+wezterm.on("format-window-title", function(tab, pane)
+  local number
+  if wezterm.gui then
+    for index, gui_window in ipairs(wezterm.gui.gui_windows()) do
+      local ok, window_id = pcall(function()
+        return gui_window:window_id()
+      end)
+      if ok and window_id == tab.window_id then
+        number = index
+        break
+      end
+    end
+  end
+
+  if number then
+    return string.format("[%d] %s", number, pane.title)
+  end
+  return pane.title
+end)
+
 local function system_metrics()
   local success, stdout = wezterm.run_child_process({
     "/bin/sh",
