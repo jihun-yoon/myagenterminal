@@ -3,12 +3,12 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
 local colors = {
-  background = "#1e1e2e",
-  system = "#313244",
-  battery = "#45475a",
-  clock = "#585b70",
-  text = "#cdd6f4",
-  muted = "#a6adc8",
+  background = "#15191f",
+  system = "#252a31",
+  battery = "#343a43",
+  clock = "#4a515c",
+  text = "#dcdcdc",
+  muted = "#a6a6a6",
 }
 
 local function system_metrics()
@@ -70,8 +70,10 @@ wezterm.on("update-right-status", function(window)
   window:set_right_status(wezterm.format(elements))
 end)
 
-config.font = wezterm.font("JetBrains Mono")
-config.font_size = 14.0
+-- Match the saved iTerm2 Default profile: JetBrainsMono Nerd Font Mono, 15pt.
+config.font = wezterm.font("JetBrainsMono Nerd Font Mono")
+config.font_size = 15.0
+config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
 
 config.enable_tab_bar = true
 config.hide_tab_bar_if_only_one_tab = false
@@ -83,6 +85,32 @@ config.status_update_interval = 10000
 config.notification_handling = "AlwaysShow"
 
 config.colors = {
+  foreground = "#dcdcdc",
+  background = "#15191f",
+  cursor_bg = "#ffffff",
+  cursor_fg = "#000000",
+  selection_bg = "#b3d7ff",
+  selection_fg = "#000000",
+  ansi = {
+    "#14191e",
+    "#b43c2a",
+    "#00c200",
+    "#c7c400",
+    "#2744c7",
+    "#c040be",
+    "#00c5c7",
+    "#c7c7c7",
+  },
+  brights = {
+    "#686868",
+    "#dd7975",
+    "#58e790",
+    "#ece100",
+    "#a7abf2",
+    "#e17ee1",
+    "#60fdff",
+    "#ffffff",
+  },
   tab_bar = {
     background = colors.background,
     active_tab = {

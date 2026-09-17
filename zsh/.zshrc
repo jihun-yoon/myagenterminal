@@ -45,3 +45,6 @@ if [[ -n "${brew_prefix}" && \
   source "${brew_prefix}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 unset brew_prefix
+
+# Keep publisher-native agent CLIs ahead of mise shims and other installs.
+export PATH="${HOME}/.local/bin:${PATH}"
