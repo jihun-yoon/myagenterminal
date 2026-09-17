@@ -10,7 +10,7 @@ by default and refuses to overwrite existing files or unrelated symlinks.
 읽어 각 도구의 역할, 안전한 적용 순서, 기존 설정과 충돌할 때의 대응 방법을
 확인하세요. 실제 사용법은 [WezTerm, Neovim, and Herdr tutorial](docs/tutorial.md)에
 설명되어 있습니다. 빠른 단축키는 [한국어 치트시트](docs/cheatsheet.ko.md)를
-참고하세요.
+참고하세요. 인쇄용 PDF는 [치트시트 PDF](output/pdf/cheatsheet.ko.pdf)입니다.
 
 ## Inspiration
 
