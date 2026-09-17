@@ -178,6 +178,18 @@ config.window_padding = {
 
 -- Let Command-click bypass app mouse reporting and open terminal hyperlinks.
 config.bypass_mouse_reporting_modifiers = "CMD"
+config.mouse_bindings = {
+  {
+    event = { Up = { streak = 1, button = "Left" } },
+    mods = "CMD",
+    action = wezterm.action.OpenLinkAtMouseCursor,
+  },
+  {
+    event = { Down = { streak = 1, button = "Left" } },
+    mods = "CMD",
+    action = wezterm.action.Nop,
+  },
+}
 
 config.window_close_confirmation = "NeverPrompt"
 
