@@ -60,11 +60,23 @@ right:
 | Close current tab | `Command-w` |
 | Previous or next tab | `Command-Shift-[` / `Command-Shift-]` |
 | Select tab 1–9 | `Command-1` … `Command-9` |
+| New WezTerm window | `Command-n` |
+| Previous or next window | `Command-\`` / `Command-Shift-\`` |
+| Select window 1–9 | `Command-Option-1` … `Command-Option-9` |
+| Move active pane to a new window | `Command-Shift-m` |
+| Scroll one page | `Command-Up` / `Command-Down` |
+| Scroll three lines | `Command-Shift-Up` / `Command-Shift-Down` |
 | Copy / paste | `Command-c` / `Command-v` |
 | Search terminal output | `Command-f` |
 | Increase / decrease font | `Command-+` / `Command--` |
 | Reset font size | `Command-0` |
 | Reload WezTerm configuration | `Command-r` |
+
+The window title shows its current number, such as `[1]` or `[2]`. Window
+numbers match the `Command-Option-1` through `Command-Option-9` shortcuts. A
+WezTerm tab is a tab inside one window; `Command-Shift-m` takes the active
+Herdr or shell pane out into a separate window without requiring an interactive
+shell command.
 
 Use WezTerm tabs for separate top-level activities. Use Herdr's tabs and panes
 for the related processes within one project.
@@ -81,6 +93,12 @@ The shell defines a few short commands:
 | `ll` | Detailed directory listing with Git information |
 | `tree` | Show a directory tree |
 
+`ls`, `ll`, and `tree` emit terminal hyperlinks for displayed paths. Hold
+`Command` and click a URL to open it in the browser, or click a `file://` path
+to open the local file with its macOS default application. This remains
+available when Codex, Neovim, or another pane application is using mouse
+reporting because the configured Command modifier is handled by WezTerm.
+
 Other interactive features include:
 
 - autosuggestions based on command history;
@@ -94,6 +112,36 @@ Other interactive features include:
 When a faint autosuggestion appears, press the right-arrow key to accept it.
 Use `Ctrl-r` to search command history. After zoxide learns your directories,
 `z project-name` can replace a long `cd` command.
+
+### Intentional tools in this setup
+
+These tools are installed by the repository because they support the workflow;
+they are not random extras. `./install.sh --apply --packages` installs the
+Homebrew entries in `Brewfile`. Claude Code and Codex are the exception: they
+are installed separately with `./scripts/agents.sh` because their publishers
+provide native installers.
+
+| Tool | What it is for | Start here |
+| --- | --- | --- |
+| Atuin | Search and reuse shell history | `↑` or `Ctrl-r`; type a query, `Enter` edits the selected command, `Esc` exits |
+| fzf | Fuzzy selection used by shell integrations | `Ctrl-t` files, `Alt-c` directories, or use it through picker commands |
+| zoxide | Jump to frequently used directories | `z project-name` |
+| Starship | Prompt showing Git and runtime context | It starts automatically with zsh |
+| zsh plugins | Suggestions, syntax highlighting, and completions | Type normally; accept a suggestion with `Right Arrow` |
+| bat | Read files with syntax highlighting | `cat README.md` |
+| eza | Modern directory listings and trees | `ls`, `ll`, `tree`; `⌘`-click printed paths |
+| ripgrep / fd | Search text / find files quickly | `rg "pattern" .` / `fd filename` |
+| jq | Inspect and transform JSON | `jq '.items[]' data.json` |
+| delta | Readable Git diffs | `git diff` |
+| mise | Manage Node 24 and pnpm 10.28.0 | `mise current`, `mise install` |
+| uv | Manage Python project environments | `uv sync` or `uv run ...` inside a Python project |
+| GitHub CLI | Work with GitHub from the terminal | `gh auth status`, `gh pr list` |
+
+Atuin's Up-arrow screen is intentional: it replaces the usual single-command
+history step with a searchable history list. Use `↑`/`↓` to select a result,
+`Enter` or `Tab` to edit it at the prompt, `Ctrl-o` to inspect it, and `Esc` to
+leave without selecting anything. The command is not executed until you submit
+it from the normal shell prompt.
 
 ## 4. Learn Neovim's modes first
 
@@ -491,6 +539,11 @@ restart WezTerm and validate the configuration with:
 ```bash
 wezterm --config-file ~/.config/wezterm/wezterm.lua ls-fonts >/dev/null
 ```
+
+If a URL or local file does not open, confirm that the path was printed by
+`ll` or `tree`, hold `Command` while clicking, and reload WezTerm with
+`Command-r`. For a `file://` path, macOS decides which default application
+opens the file.
 
 ## 13. A small practice exercise
 
