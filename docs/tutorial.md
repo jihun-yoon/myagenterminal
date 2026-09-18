@@ -113,6 +113,36 @@ When a faint autosuggestion appears, press the right-arrow key to accept it.
 Use `Ctrl-r` to search command history. After zoxide learns your directories,
 `z project-name` can replace a long `cd` command.
 
+### Intentional tools in this setup
+
+These tools are installed by the repository because they support the workflow;
+they are not random extras. `./install.sh --apply --packages` installs the
+Homebrew entries in `Brewfile`. Claude Code and Codex are the exception: they
+are installed separately with `./scripts/agents.sh` because their publishers
+provide native installers.
+
+| Tool | What it is for | Start here |
+| --- | --- | --- |
+| Atuin | Search and reuse shell history | `↑` or `Ctrl-r`; type a query, `Enter` edits the selected command, `Esc` exits |
+| fzf | Fuzzy selection used by shell integrations | `Ctrl-t` files, `Alt-c` directories, or use it through picker commands |
+| zoxide | Jump to frequently used directories | `z project-name` |
+| Starship | Prompt showing Git and runtime context | It starts automatically with zsh |
+| zsh plugins | Suggestions, syntax highlighting, and completions | Type normally; accept a suggestion with `Right Arrow` |
+| bat | Read files with syntax highlighting | `cat README.md` |
+| eza | Modern directory listings and trees | `ls`, `ll`, `tree`; `⌘`-click printed paths |
+| ripgrep / fd | Search text / find files quickly | `rg "pattern" .` / `fd filename` |
+| jq | Inspect and transform JSON | `jq '.items[]' data.json` |
+| delta | Readable Git diffs | `git diff` |
+| mise | Manage Node 24 and pnpm 10.28.0 | `mise current`, `mise install` |
+| uv | Manage Python project environments | `uv sync` or `uv run ...` inside a Python project |
+| GitHub CLI | Work with GitHub from the terminal | `gh auth status`, `gh pr list` |
+
+Atuin's Up-arrow screen is intentional: it replaces the usual single-command
+history step with a searchable history list. Use `↑`/`↓` to select a result,
+`Enter` or `Tab` to edit it at the prompt, `Ctrl-o` to inspect it, and `Esc` to
+leave without selecting anything. The command is not executed until you submit
+it from the normal shell prompt.
+
 ## 4. Learn Neovim's modes first
 
 Start Neovim in a project:
