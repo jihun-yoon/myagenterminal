@@ -100,7 +100,7 @@ wezterm.on("update-right-status", function(window)
   window:set_right_status(wezterm.format(elements))
 end)
 
--- Match the saved iTerm2 Default profile: JetBrainsMono Nerd Font Mono, 15pt.
+-- Match the saved iTerm2 Default profile: JetBrainsMono Nerd Font Mono, 16pt.
 config.font = wezterm.font("JetBrainsMono Nerd Font Mono")
 config.font_size = 16.0
 config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }

@@ -60,11 +60,23 @@ right:
 | Close current tab | `Command-w` |
 | Previous or next tab | `Command-Shift-[` / `Command-Shift-]` |
 | Select tab 1–9 | `Command-1` … `Command-9` |
+| New WezTerm window | `Command-n` |
+| Previous or next window | `Command-\`` / `Command-Shift-\`` |
+| Select window 1–9 | `Command-Option-1` … `Command-Option-9` |
+| Move active pane to a new window | `Command-Shift-m` |
+| Scroll one page | `Command-Up` / `Command-Down` |
+| Scroll three lines | `Command-Shift-Up` / `Command-Shift-Down` |
 | Copy / paste | `Command-c` / `Command-v` |
 | Search terminal output | `Command-f` |
 | Increase / decrease font | `Command-+` / `Command--` |
 | Reset font size | `Command-0` |
 | Reload WezTerm configuration | `Command-r` |
+
+The window title shows its current number, such as `[1]` or `[2]`. Window
+numbers match the `Command-Option-1` through `Command-Option-9` shortcuts. A
+WezTerm tab is a tab inside one window; `Command-Shift-m` takes the active
+Herdr or shell pane out into a separate window without requiring an interactive
+shell command.
 
 Use WezTerm tabs for separate top-level activities. Use Herdr's tabs and panes
 for the related processes within one project.
@@ -80,6 +92,12 @@ The shell defines a few short commands:
 | `t` | Start or attach to tmux |
 | `ll` | Detailed directory listing with Git information |
 | `tree` | Show a directory tree |
+
+`ls`, `ll`, and `tree` emit terminal hyperlinks for displayed paths. Hold
+`Command` and click a URL to open it in the browser, or click a `file://` path
+to open the local file with its macOS default application. This remains
+available when Codex, Neovim, or another pane application is using mouse
+reporting because the configured Command modifier is handled by WezTerm.
 
 Other interactive features include:
 
@@ -491,6 +509,11 @@ restart WezTerm and validate the configuration with:
 ```bash
 wezterm --config-file ~/.config/wezterm/wezterm.lua ls-fonts >/dev/null
 ```
+
+If a URL or local file does not open, confirm that the path was printed by
+`ll` or `tree`, hold `Command` while clicking, and reload WezTerm with
+`Command-r`. For a `file://` path, macOS decides which default application
+opens the file.
 
 ## 13. A small practice exercise
 
