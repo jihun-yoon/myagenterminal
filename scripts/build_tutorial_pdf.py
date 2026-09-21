@@ -34,7 +34,7 @@ styles.add(ParagraphStyle(
 styles.add(ParagraphStyle(
     name="TutorialH3", parent=styles["Heading2"], fontName="AppleGothic",
     fontSize=10.5, leading=14, textColor=colors.HexColor("#34404c"),
-    spaceBefore=2.5 * mm, spaceAfter=1.2 * mm,
+    spaceBefore=2.5 * mm, spaceAfter=1.2 * mm, keepWithNext=True,
 ))
 styles.add(ParagraphStyle(
     name="TutorialBody", parent=styles["BodyText"], fontName="AppleGothic",

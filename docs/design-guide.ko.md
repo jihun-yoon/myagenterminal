@@ -319,11 +319,9 @@ ll      자세한 파일 목록
 tree    디렉터리 트리
 ```
 
-WezTerm 상단 상태 표시줄의 `MEM`은 전체 RAM에서 free page만 뺀 값이 아닙니다.
-application의 anonymous memory, macOS의 wired memory, 실제 compressor page를
-포함하고 필요할 때 회수할 수 있는 file-backed cache는 제외합니다. 따라서 macOS가
-cache로 RAM을 적극 활용하더라도 실제 non-cache memory 수요를 더 직관적으로
-보여줍니다.
+WezTerm 상단 상태 표시줄에는 배터리 충전 상태와 현재 시각만 표시합니다. CPU와
+메모리 수집을 위해 주기적으로 외부 프로세스를 실행하지 않으므로 터미널 frontend는
+세션 표시와 입력 전달에 집중합니다.
 
 ## 7. tmux와 Herdr를 함께 설치하는 이유
 

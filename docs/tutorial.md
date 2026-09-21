@@ -37,18 +37,13 @@ work, or tmux for general and remote work, instead of nesting all three.
 Open **WezTerm** from Spotlight or the Applications folder. A plain zsh shell
 starts automatically.
 
-The top bar contains WezTerm tabs on the left and system information on the
-right:
+The top bar contains WezTerm tabs on the left and battery and clock information
+on the right:
 
 ```text
-[1. zsh]                         CPU 12%  MEM 62% | BAT+ 72% | Tue Sep 15  14:30
+[1. zsh]                                      BAT+ 72% | Tue Sep 15  14:30
 ```
 
-- `CPU` is total CPU activity normalized across the logical CPU cores.
-- `MEM` is non-cache memory use: anonymous application memory, wired memory,
-  and physical pages occupied by compressed memory. It excludes file-backed
-  cache that macOS can reclaim for applications, so it is more useful than
-  simply subtracting free pages from total RAM.
 - `BAT+` means the battery is charging; `BAT` means it is not charging.
 - The display refreshes every ten seconds.
 
@@ -316,6 +311,8 @@ Press `Ctrl-b`, then `?` at any time to show the active keybindings.
 | Close pane | `Ctrl-b`, then `x` |
 | Zoom/unzoom pane | `Ctrl-b`, then `z` |
 | Enter resize mode | `Ctrl-b`, then `r` |
+| Browse pane scrollback in copy mode | `Ctrl-b`, then `[` |
+| Open pane scrollback in `$EDITOR` | `Ctrl-b`, then `e` |
 | Toggle sidebar | `Ctrl-b`, then `b` |
 | Detach from Herdr | `Ctrl-b`, then `q` |
 
@@ -331,10 +328,42 @@ Press `Ctrl-b`, then `?` at any time to show the active keybindings.
 | Open workspace picker | `Ctrl-b`, then `w` |
 | Create workspace | `Ctrl-b`, then `Shift-n` |
 | Rename workspace | `Ctrl-b`, then `Shift-w` |
+| Close workspace | `Ctrl-b`, then `Shift-d` |
 | Create a Git-worktree workspace | `Ctrl-b`, then `Shift-g` |
 
 Uppercase actions mean holding Shift for the action key after releasing the
 prefix.
+
+### Browse scrollback without a mouse or Page Up/Down keys
+
+Herdr owns the scrollback for its panes while its full-screen interface is
+active. A WezTerm `ScrollByPage` shortcut therefore does not navigate Herdr's
+pane history. Enter Herdr copy mode instead:
+
+```text
+Ctrl-b, then [
+```
+
+Use these keys while copy mode is active:
+
+| Action | Key |
+| --- | --- |
+| Move half a page up / down | `Ctrl-u` / `Ctrl-d` |
+| Move one line up / down | `k` / `j` |
+| Move to the previous / next paragraph | `{` / `}` |
+| Search forward / backward | `/` / `?` |
+| Repeat the search forward / backward | `n` / `N` |
+| Leave copy mode | `q` or `Esc` |
+
+The copy-mode cursor starts at the bottom of the current output. After a large
+`Ctrl-u` or `Ctrl-d` movement, `k` and `j` still adjust that cursor one line at
+a time from its current position. For long history or more precise positioning,
+press `Ctrl-b`, then `e` instead. Herdr opens the pane scrollback in `$EDITOR`;
+in Neovim, use `Ctrl-u`/`Ctrl-d`, `H`/`M`/`L`, `zz`, and `/` search as usual.
+
+Closing a workspace with `Ctrl-b`, then `Shift-d` closes its Herdr panes after
+confirmation. It does not delete the project directory or an associated Git
+branch or worktree.
 
 ## 8. A practical agent workflow
 

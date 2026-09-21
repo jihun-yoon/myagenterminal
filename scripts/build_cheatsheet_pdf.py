@@ -206,14 +206,17 @@ story = [
             ("다음 pane", "Ctrl-b, Tab"),
             ("pane 확대/복원", "Ctrl-b, z"),
             ("pane 닫기 / 크기 조절", "Ctrl-b, x / Ctrl-b, r"),
+            ("스크롤백 copy mode / 편집기", "Ctrl-b, [ / Ctrl-b, e"),
             ("사이드바 표시/숨김", "Ctrl-b, b"),
             ("분리(detach)", "Ctrl-b, q"),
             ("새 tab", "Ctrl-b, c"),
             ("workspace 선택기", "Ctrl-b, w"),
             ("새 workspace", "Ctrl-b, Shift-n"),
             ("workspace 이름 변경", "Ctrl-b, Shift-w"),
+            ("workspace 닫기", "Ctrl-b, Shift-d"),
         ]
     ),
+    p("Copy mode: <b>Ctrl-u/d</b> 반 페이지, <b>k/j</b> 한 줄, <b>/</b> 검색, <b>q</b> 종료. 긴 기록은 <b>Ctrl-b, e</b>로 편집기에서 엽니다.", "KSmall"),
     p("자주 쓰는 명령: <b>herdr status</b>, <b>herdr workspace list</b>, <b>herdr agent list</b>, <b>herdr server reload-config</b>"),
     p("4. Neovim", "KH1"),
     key_table(

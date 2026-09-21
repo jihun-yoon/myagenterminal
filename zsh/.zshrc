@@ -10,9 +10,12 @@ setopt AUTO_CD
 setopt HIST_IGNORE_DUPS
 setopt SHARE_HISTORY
 
-brew_prefix=""
-if command -v brew >/dev/null 2>&1; then
+typeset -gU fpath
+brew_prefix="${HOMEBREW_PREFIX:-}"
+if [[ -z "${brew_prefix}" ]] && command -v brew >/dev/null 2>&1; then
   brew_prefix="$(brew --prefix)"
+fi
+if [[ -n "${brew_prefix}" ]]; then
   [[ -d "${brew_prefix}/share/zsh-completions" ]] && \
     fpath=("${brew_prefix}/share/zsh-completions" $fpath)
 fi

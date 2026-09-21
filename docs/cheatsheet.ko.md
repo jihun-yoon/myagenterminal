@@ -82,6 +82,8 @@ Herdr 단축키는 `Ctrl-b`를 먼저 누르고, 손을 뗀 다음 명령 키를
 | pane 확대/복원 | `Ctrl-b`, `z` |
 | pane 닫기 | `Ctrl-b`, `x` |
 | 크기 조절 모드 | `Ctrl-b`, `r` |
+| 스크롤백 copy mode | `Ctrl-b`, `[` |
+| 스크롤백을 편집기로 열기 | `Ctrl-b`, `e` |
 | 사이드바 표시/숨김 | `Ctrl-b`, `b` |
 | 분리(detach) | `Ctrl-b`, `q` |
 
@@ -96,7 +98,29 @@ Herdr 단축키는 `Ctrl-b`를 먼저 누르고, 손을 뗀 다음 명령 키를
 | workspace 선택기 | `Ctrl-b`, `w` |
 | 새 workspace | `Ctrl-b`, `Shift-n` |
 | workspace 이름 변경 | `Ctrl-b`, `Shift-w` |
+| workspace 닫기 | `Ctrl-b`, `Shift-d` |
 | Git worktree workspace | `Ctrl-b`, `Shift-g` |
+
+### 마우스·Page Up/Down 키 없이 스크롤백 탐색
+
+Herdr 화면에서는 WezTerm의 `ScrollByPage`가 아니라 Herdr 자체 스크롤백을
+사용합니다. `Ctrl-b`, `[`로 copy mode에 들어간 뒤 조작합니다.
+
+| 동작 | 키 |
+| --- | --- |
+| 반 페이지 위/아래 | `Ctrl-u` / `Ctrl-d` |
+| 한 줄 위/아래 | `k` / `j` |
+| 이전/다음 문단 | `{` / `}` |
+| 앞/뒤 검색 | `/` / `?` |
+| 다음/이전 검색 결과 | `n` / `N` |
+| copy mode 종료 | `q` / `Esc` |
+
+copy mode 커서는 현재 출력의 맨 아래에서 시작합니다. 긴 기록을 더 정밀하게
+탐색하려면 `Ctrl-b`, `e`로 스크롤백을 `$EDITOR`에서 엽니다. Neovim에서는
+`Ctrl-u/d`, `H/M/L`, `zz`, `/` 검색을 그대로 사용할 수 있습니다.
+
+`Ctrl-b`, `Shift-d`는 확인 후 현재 workspace와 pane을 닫지만 프로젝트
+디렉터리나 연결된 Git branch/worktree를 삭제하지 않습니다.
 
 ### 자주 쓰는 명령
 

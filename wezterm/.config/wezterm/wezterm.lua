@@ -41,40 +41,6 @@ wezterm.on("format-window-title", function(tab, pane)
   return pane.title
 end)
 
-local function system_metrics()
-  local success, stdout = wezterm.run_child_process({
-    "/bin/sh",
-    "-c",
-    [[
-      cpu_sum=$(/bin/ps -A -o %cpu= | /usr/bin/awk '{sum += $1} END {print sum + 0}')
-      cores=$(/usr/sbin/sysctl -n hw.logicalcpu)
-      total_bytes=$(/usr/sbin/sysctl -n hw.memsize)
-      used_bytes=$(/usr/bin/vm_stat | /usr/bin/awk '
-        /page size of/ { gsub(/[^0-9]/, "", $8); page_size = $8 }
-        /Anonymous pages:/ { gsub(/[^0-9]/, "", $3); anonymous = $3 }
-        /Pages wired down:/ { gsub(/[^0-9]/, "", $4); wired = $4 }
-        /Pages occupied by compressor:/ { gsub(/[^0-9]/, "", $5); compressed = $5 }
-        END { printf "%.0f", (anonymous + wired + compressed) * page_size }
-      ')
-      /usr/bin/awk -v cpu_sum="$cpu_sum" -v cores="$cores" \
-        -v total_bytes="$total_bytes" -v used_bytes="$used_bytes" \
-        'BEGIN {
-          cpu = cores > 0 ? cpu_sum / cores : 0
-          if (cpu > 100) cpu = 100
-          mem = total_bytes > 0 ? 100 * used_bytes / total_bytes : 0
-          if (mem > 100) mem = 100
-          printf "CPU %.0f%%  MEM %.0f%%", cpu, mem
-        }'
-    ]],
-  })
-
-  if not success then
-    return "CPU --  MEM --"
-  end
-
-  return stdout:gsub("%s+$", "")
-end
-
 local function battery_status()
   local batteries = wezterm.battery_info()
   if #batteries == 0 then
@@ -94,7 +60,6 @@ end
 
 wezterm.on("update-right-status", function(window)
   local elements = {}
-  segment(elements, system_metrics(), colors.system, colors.text)
   segment(elements, battery_status(), colors.battery, colors.text)
   segment(elements, wezterm.strftime("%a %b %-d  %H:%M"), colors.clock, colors.text)
   window:set_right_status(wezterm.format(elements))
