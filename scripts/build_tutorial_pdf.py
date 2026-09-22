@@ -9,11 +9,11 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "docs" / "tutorial.md"
+SOURCE = ROOT / "docs" / "tutorial.ko.md"
 OUTPUT = ROOT / "output" / "pdf" / "tutorial.ko.pdf"
 FONT = "/System/Library/Fonts/Supplemental/AppleGothic.ttf"
 
@@ -47,7 +47,7 @@ styles.add(ParagraphStyle(
     leftIndent=4 * mm, spaceAfter=0.7 * mm,
 ))
 styles.add(ParagraphStyle(
-    name="TutorialCode", parent=styles["BodyText"], fontName="TutorialMono",
+    name="TutorialCode", parent=styles["BodyText"], fontName="AppleGothic",
     fontSize=7.1, leading=9.5, textColor=colors.HexColor("#dce3ea"),
 ))
 styles.add(ParagraphStyle(
@@ -129,6 +129,9 @@ def build_story():
         if line.startswith("# "):
             story.append(Paragraph(inline(line[2:]), styles["TutorialTitle"]))
         elif line.startswith("## "):
+            # Keep the final practice exercise and references off an orphan page.
+            if line.startswith("## 13. "):
+                story.append(PageBreak())
             story.append(Paragraph(inline(line[3:]), styles["TutorialH2"]))
         elif line.startswith("### "):
             story.append(Paragraph(inline(line[4:]), styles["TutorialH3"]))
@@ -148,7 +151,7 @@ def footer(canvas, doc):
     canvas.saveState()
     canvas.setFont("AppleGothic", 7)
     canvas.setFillColor(colors.HexColor("#68727d"))
-    canvas.drawString(18 * mm, 10 * mm, "myagenterminal · WezTerm · Herdr · Neovim tutorial")
+    canvas.drawString(18 * mm, 10 * mm, "myagenterminal · WezTerm · Herdr · Neovim 튜토리얼")
     canvas.drawRightString(192 * mm, 10 * mm, str(doc.page))
     canvas.restoreState()
 
@@ -157,7 +160,7 @@ OUTPUT.parent.mkdir(parents=True, exist_ok=True)
 doc = SimpleDocTemplate(
     str(OUTPUT), pagesize=A4, rightMargin=20 * mm, leftMargin=20 * mm,
     topMargin=16 * mm, bottomMargin=16 * mm,
-    title="WezTerm, Neovim, and Herdr Tutorial", author="myagenterminal",
+    title="WezTerm, Neovim, Herdr 한국어 튜토리얼", author="myagenterminal",
 )
 doc.build(build_story(), onFirstPage=footer, onLaterPages=footer)
 print(OUTPUT)

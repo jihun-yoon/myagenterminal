@@ -76,6 +76,28 @@ shell command.
 Use WezTerm tabs for separate top-level activities. Use Herdr's tabs and panes
 for the related processes within one project.
 
+### Switch between Gruvbox day and night
+
+The theme command is a **script in this repository**, not a globally installed
+CLI or a `mat` command. Run it from the clone, or use its absolute path from
+another directory:
+
+```bash
+cd /path/to/myagenterminal
+./scripts/theme.sh day      # light Gruvbox Soft
+./scripts/theme.sh night    # dark Gruvbox Soft
+./scripts/theme.sh status   # saved selection
+```
+
+Night is the default if no selection file exists. The choice lives outside Git
+in `~/.config/myagenterminal/theme`. WezTerm reloads its configuration, and
+**new** Neovim sessions use the selected mode with soft contrast; restart an
+existing Neovim session to update it. Herdr detects the appearance of its host
+terminal and selects Gruvbox or Gruvbox Light. In a terminal other than
+WezTerm, Herdr's appearance may therefore differ from the saved choice; its UI
+accent colors are not exactly the Soft palette either. `status` reports the
+**saved choice**, not the effective appearance of every open window.
+
 ## 3. Shell conveniences
 
 The shell defines a few short commands:
@@ -152,10 +174,10 @@ current mode.
 
 | Mode | Purpose | Enter it | Leave it |
 | --- | --- | --- | --- |
-| Normal | Navigate and run commands | Neovim starts here | — |
+| Normal | Navigate and edit with key commands | Neovim starts here | — |
 | Insert | Type text | `i`, `a`, or `o` | `Esc` |
 | Visual | Select text | `v` or `V` | `Esc` |
-| Command | Save, quit, and run editor commands | `:` | `Enter` or `Esc` |
+| Command-line | Save, quit, and run editor commands | `:` | `Enter` or `Esc` |
 
 If you are unsure which mode you are in, press `Esc`. This returns you to Normal
 mode in most situations.
@@ -187,7 +209,9 @@ Common exit commands:
 | Next / previous word | `w` / `b` |
 | Start / end of line | `0` / `$` |
 | Start / end of file | `gg` / `G` |
+| Half-page up / down | `Ctrl-u` / `Ctrl-d` |
 | Undo / redo | `u` / `Ctrl-r` |
+| Delete character under cursor | `x` |
 | Delete current line | `dd` |
 | Copy current line | `yy` |
 | Paste after cursor | `p` |
@@ -196,6 +220,36 @@ Common exit commands:
 
 The system clipboard is enabled. Text copied in Neovim can be pasted into other
 macOS applications, and vice versa.
+
+### Why `q` and `:q` do different things
+
+Normal mode is Neovim's default **command-key** state: pressing `j` moves the
+cursor instead of typing the letter `j` into the file. Press `i` to enter
+Insert mode when you want to type, then `Esc` to return. From Normal mode,
+press `:` to open the command line at the bottom, type `q`, and press `Enter`
+to quit the current window (or Neovim if it is the last window). We write
+this whole sequence as `:q`: the `q` is text entered on the command line,
+not a Normal-mode key action.
+
+By contrast, pressing `q` directly in a regular file's Normal mode starts a
+**macro recording** command and waits for a register name such as `a`. The
+pending `q` may appear in the bottom status area, but it has not opened the
+command line. Press `Esc` to cancel if that was accidental. While recording,
+pressing `q` again stops the recording. In special plugin screens the same key
+may have another meaning: in Neogit's status screen, `q` closes Neogit.
+
+A macro records a sequence of Neovim key actions so you can replay it. Try a
+cursor-only example in a file with at least three lines; it makes no edits:
+
+1. Press `gg` to move to the first line.
+2. Press `q`, then `a` to start recording into register `a`.
+3. Press `j` to move down one line, then `q` to stop recording.
+4. Press `@a` to replay the macro: the cursor moves down one more line.
+
+An editing macro can change text on every replay, so check what you recorded
+before repeating it many times. Herdr's `Ctrl-b`, then `[` copy mode is a
+different feature: it navigates and copies retained terminal output without
+editing the file or recording Neovim keys. Its `q` leaves copy mode.
 
 ## 5. Use this Neovim configuration
 
@@ -213,6 +267,21 @@ means press Space, release it, then press `g` twice.
 
 The picker supports fuzzy search. Type only distinctive parts of a filename or
 phrase, select a result, and press `Enter`. Press `Esc` to close it.
+
+### Browse with Oil; search quickly with Snacks
+
+Oil shows the current file's parent directory as an editable Neovim buffer.
+Open it with `Space e` or `:Oil`, press `Enter` to open a file or directory,
+and press `-` to move to the parent. `g?` shows Oil's help, and hidden files
+are visible. Renaming a line or adding or deleting an entry can change the
+filesystem when you save with `:w`, so review those edits first.
+
+Snacks is a separate collection of pickers and UI helpers. `Space Space`
+finds files, `Space /` searches project text, and `Space g b` / `Space g l`
+browse Git branches and history. This setup also enables its input and
+notification UI, large-file handling, and quick file opening. Use Oil to
+navigate and manage a directory; use a Snacks picker when you know a file name
+or text fragment and want to find it quickly.
 
 ### Work with editor splits
 
@@ -249,6 +318,9 @@ Press `Space g g` to open Neogit. It provides a repository-wide Git view for
 reviewing files, diffs, staging, and commits. Press `?` inside Neogit to see its
 context-sensitive controls; use those displayed controls instead of trying to
 memorize everything immediately.
+
+For a first-principles explanation of the status screen, sections, hunks, and
+`@@` diff headers, read the [Korean Neogit guide](neogit-guide.ko.md).
 
 Which-key also shows available leader-key actions when you pause after pressing
 Space.
@@ -299,6 +371,25 @@ for the focused shell or editor.
 
 Press `Ctrl-b`, then `?` at any time to show the active keybindings.
 
+### Read long Codex output in Neovim (no mouse)
+
+You can open the focused Codex pane's Herdr scrollback directly in Neovim. You
+do not need to create another pane or enter copy mode first:
+
+1. Focus the Codex pane. If needed, press `Ctrl-b`, then `h/j/k/l` to reach it.
+2. Press `Ctrl-b`, release both keys, then press `e`.
+3. Herdr opens that pane's scrollback in `$EDITOR`. This setup sets
+   `EDITOR=nvim`, so Neovim opens automatically.
+4. Press `Esc` for Normal mode. Use `gg` / `G` for the beginning / end,
+   `Ctrl-u` / `Ctrl-d` for half-page moves, or `/keyword`, `Enter`, then `n` / `N`
+   to search. Use `j` / `k` for one-line adjustments.
+5. Type `:q` and press `Enter` to close the editor and return to Herdr.
+
+This opens **Herdr's retained pane text**, not necessarily the whole Codex
+conversation. If an older answer is absent because the full-screen app keeps
+its own history, ask Codex to save that answer as a Markdown file and open the
+file with `v path/to/file.md` in a shell pane.
+
 ### Essential Herdr keys
 
 | Action | Sequence |
@@ -338,7 +429,7 @@ prefix.
 
 Herdr owns the scrollback for its panes while its full-screen interface is
 active. A WezTerm `ScrollByPage` shortcut therefore does not navigate Herdr's
-pane history. Enter Herdr copy mode instead:
+pane history. For a quick look, enter Herdr copy mode instead:
 
 ```text
 Ctrl-b, then [
@@ -356,10 +447,9 @@ Use these keys while copy mode is active:
 | Leave copy mode | `q` or `Esc` |
 
 The copy-mode cursor starts at the bottom of the current output. After a large
-`Ctrl-u` or `Ctrl-d` movement, `k` and `j` still adjust that cursor one line at
-a time from its current position. For long history or more precise positioning,
-press `Ctrl-b`, then `e` instead. Herdr opens the pane scrollback in `$EDITOR`;
-in Neovim, use `Ctrl-u`/`Ctrl-d`, `H`/`M`/`L`, `zz`, and `/` search as usual.
+`Ctrl-u` or `Ctrl-d` movement, `k` and `j` adjust that cursor one line at a
+time. For searching or precise positioning, leave copy mode and use the
+**Codex-to-Neovim steps above** (`Ctrl-b`, then `e`).
 
 Closing a workspace with `Ctrl-b`, then `Shift-d` closes its Herdr panes after
 confirmation. It does not delete the project directory or an associated Git
@@ -604,6 +694,9 @@ Once this sequence feels comfortable, use the same layout in a real project.
 
 - WezTerm: <https://wezterm.org/config/files.html>
 - Neovim user manual: <https://neovim.io/doc/user/>
+- Neovim macro recording and replay: <https://neovim.io/doc/user/usr_10/>
+- Oil file browser: <https://github.com/stevearc/oil.nvim>
+- Snacks pickers and UI helpers: <https://github.com/folke/snacks.nvim>
 - Herdr concepts: <https://herdr.dev/docs/concepts/>
 - Herdr keyboard guide: <https://herdr.dev/docs/keyboard/>
 - Herdr configuration: <https://herdr.dev/docs/configuration/>

@@ -45,6 +45,14 @@ WezTerm 창
 브라우저로, `file://` 경로는 macOS 기본 앱으로 열립니다. Codex나 Neovim이
 마우스를 가로채는 경우에도 `⌘`-클릭은 WezTerm이 우선 처리합니다.
 
+### 테마 전환
+
+`mat` 전역 명령은 설치되지 않습니다. **myagenterminal 저장소에서**
+`./scripts/theme.sh day|night|status`를 실행하세요. 다른 곳에서는 절대 경로를
+사용합니다. 기본값은 night이며 `status`는 저장된 선택값을 보여 줍니다.
+WezTerm은 다시 읽히고, 이미 열린 Neovim은 재시작해야 합니다. Herdr는
+저장 파일 대신 실행 중인 터미널의 밝기를 따릅니다.
+
 ### 복사와 검색
 
 | 동작 | 단축키 |
@@ -69,6 +77,24 @@ h
 Herdr 단축키는 `Ctrl-b`를 먼저 누르고, 손을 뗀 다음 명령 키를 누릅니다.
 
 예: `Ctrl-b`, `v`는 오른쪽 pane 분할입니다.
+
+### Codex 출력을 Neovim에서 읽기 — 마우스 불필요
+
+```text
+Codex pane에 초점 → Ctrl-b, e → Neovim에서 검색·스크롤 → :q Enter
+```
+
+1. Codex pane에 초점을 맞춥니다. 필요하면 `Ctrl-b`, `h/j/k/l`로 이동합니다.
+2. `Ctrl-b`를 누르고 손을 뗀 뒤 `e`를 누릅니다. **copy mode에 먼저 들어갈 필요는
+   없습니다.** Herdr가 해당 pane의 스크롤백을 `$EDITOR`로 엽니다. 이 저장소는
+   `EDITOR=nvim`으로 설정하므로 Neovim이 자동으로 열립니다.
+3. `Esc`로 Normal 모드를 확인한 뒤 `gg` / `G`(처음 / 끝), `Ctrl-u` / `Ctrl-d`
+   (반 페이지), `j` / `k`(한 줄), `/검색어` `Enter`와 `n` / `N`을 사용합니다.
+4. `:q` `Enter`로 편집기를 닫고 Herdr로 돌아옵니다.
+
+이 방법은 **Herdr에 남은 pane 출력**을 엽니다. Codex가 자체 전체 화면에만
+보관한 오래된 답변이 보이지 않으면 Codex에 Markdown 파일로 저장해 달라고 하고,
+셸 pane에서 `v path/to/file.md`로 엽니다.
 
 ### Pane
 
@@ -115,9 +141,9 @@ Herdr 화면에서는 WezTerm의 `ScrollByPage`가 아니라 Herdr 자체 스크
 | 다음/이전 검색 결과 | `n` / `N` |
 | copy mode 종료 | `q` / `Esc` |
 
-copy mode 커서는 현재 출력의 맨 아래에서 시작합니다. 긴 기록을 더 정밀하게
-탐색하려면 `Ctrl-b`, `e`로 스크롤백을 `$EDITOR`에서 엽니다. Neovim에서는
-`Ctrl-u/d`, `H/M/L`, `zz`, `/` 검색을 그대로 사용할 수 있습니다.
+copy mode 커서는 현재 출력의 맨 아래에서 시작하며, `Ctrl-u/d`로 이동한 뒤
+`k/j`를 누르면 현재 커서 위치에서 한 줄씩 조정됩니다. 검색이나 정밀한 탐색에는
+copy mode를 나와 위의 **Codex → Neovim** 절차(`Ctrl-b`, `e`)를 사용합니다.
 
 `Ctrl-b`, `Shift-d`는 확인 후 현재 workspace와 pane을 닫지만 프로젝트
 디렉터리나 연결된 Git branch/worktree를 삭제하지 않습니다.
@@ -163,6 +189,7 @@ v .
 | 동작 | 키 |
 | --- | --- |
 | 파일 찾기 | `Space`, `Space` |
+| Oil 폴더 탐색 | `Space`, `e` |
 | 텍스트 검색 | `Space`, `/` |
 | Neogit 열기 | `Space`, `g`, `g` |
 | 다음/이전 변경 hunk | `]h` / `[h` |
@@ -170,6 +197,10 @@ v .
 | hunk stage | `Space`, `h`, `s` |
 | hunk reset | `Space`, `h`, `r` |
 | 저장 | `Space`, `w` |
+
+Oil: `Enter`로 파일·폴더 열기, `-`로 상위 폴더, `g?`로 도움말.
+이름 변경·삭제 등은 `:w` 때 파일시스템에 적용됩니다. Snacks 선택기는
+`Space Space`(파일)·`Space /`(내용)처럼 빠른 검색에 사용합니다.
 
 ### 저장과 종료
 

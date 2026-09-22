@@ -39,6 +39,8 @@ return {
     lazy = false,
     opts = {
       bigfile = { enabled = true },
+      input = { enabled = true },
+      notifier = { enabled = true },
       picker = { enabled = true },
       quickfile = { enabled = true },
       words = { enabled = true },

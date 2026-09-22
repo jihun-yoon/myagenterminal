@@ -4,13 +4,22 @@ set -Eeuo pipefail
 repo_dir="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 fixture_home="$(mktemp -d)"
 conflict_home="$(mktemp -d)"
-trap 'rm -rf -- "${fixture_home}" "${conflict_home}"' EXIT
+theme_fixture="$(mktemp -d)"
+trap 'rm -rf -- "${fixture_home}" "${conflict_home}" "${theme_fixture}"' EXIT
 
 bash -n \
   "${repo_dir}/install.sh" \
   "${repo_dir}/scripts/agents.sh" \
   "${repo_dir}/scripts/bootstrap.sh" \
-  "${repo_dir}/scripts/macos.sh"
+  "${repo_dir}/scripts/macos.sh" \
+  "${repo_dir}/scripts/theme.sh"
+
+theme_file="${theme_fixture}/theme"
+[[ "$(MYAGENTERMINAL_THEME_FILE="${theme_file}" "${repo_dir}/scripts/theme.sh" status)" == 'Gruvbox night (soft)' ]]
+MYAGENTERMINAL_THEME_FILE="${theme_file}" "${repo_dir}/scripts/theme.sh" day >/dev/null
+[[ "$(MYAGENTERMINAL_THEME_FILE="${theme_file}" "${repo_dir}/scripts/theme.sh" status)" == 'Gruvbox day (soft)' ]]
+MYAGENTERMINAL_THEME_FILE="${theme_file}" "${repo_dir}/scripts/theme.sh" night >/dev/null
+[[ "$(MYAGENTERMINAL_THEME_FILE="${theme_file}" "${repo_dir}/scripts/theme.sh" status)" == 'Gruvbox night (soft)' ]]
 HOME="${fixture_home}" PATH="/usr/bin:/bin" "${repo_dir}/scripts/agents.sh" status
 HOME="${fixture_home}" PATH="/usr/bin:/bin" "${repo_dir}/scripts/agents.sh" install
 [[ ! -e "${fixture_home}/.local/bin/claude" ]]

@@ -2,14 +2,39 @@ local wezterm = require("wezterm")
 
 local config = wezterm.config_builder()
 
-local colors = {
-  background = "#14191f",
-  system = "#252a31",
-  battery = "#343a43",
-  clock = "#4a515c",
-  text = "#dcdcdc",
-  muted = "#a6a6a6",
+local theme_file = os.getenv("MYAGENTERMINAL_THEME_FILE")
+  or (wezterm.home_dir .. "/.config/myagenterminal/theme")
+wezterm.add_to_config_reload_watch_list(theme_file)
+
+local mode = "night"
+local file = io.open(theme_file, "r")
+if file then
+  local saved = file:read("*l")
+  file:close()
+  if saved == "day" then
+    mode = "day"
+  end
+end
+
+local palettes = {
+  night = {
+    background = "#32302f",
+    system = "#504945",
+    battery = "#504945",
+    clock = "#665c54",
+    text = "#ebdbb2",
+    muted = "#bdae93",
+  },
+  day = {
+    background = "#f2e5bc",
+    system = "#ebdbb2",
+    battery = "#d5c4a1",
+    clock = "#d5c4a1",
+    text = "#3c3836",
+    muted = "#665c54",
+  },
 }
+local colors = palettes[mode]
 
 -- Open local file hyperlinks with their macOS default application.
 wezterm.on("open-uri", function(_, _, uri)
@@ -71,10 +96,10 @@ config.font_size = 16.0
 config.harfbuzz_features = { "calt=1", "clig=1", "liga=1" }
 
 config.enable_tab_bar = true
+-- Keep the bar visible for the battery and clock, even with a single tab.
 config.hide_tab_bar_if_only_one_tab = false
 config.tab_bar_at_bottom = false
-config.use_fancy_tab_bar = false
-config.tab_max_width = 32
+config.use_fancy_tab_bar = true
 config.status_update_interval = 10000
 
 -- Move the active WezTerm pane into its own window without using a shell.
@@ -130,33 +155,10 @@ end
 -- Always forward terminal-generated notifications, including from a focused window.
 config.notification_handling = "AlwaysShow"
 
+config.color_scheme = mode == "day"
+    and "Gruvbox light, soft (base16)"
+    or "Gruvbox dark, soft (base16)"
 config.colors = {
-  foreground = "#dcdcdc",
-  background = "#14191f",
-  cursor_bg = "#ffffff",
-  cursor_fg = "#000000",
-  selection_bg = "#b3d7ff",
-  selection_fg = "#000000",
-  ansi = {
-    "#14191e",
-    "#b43c2a",
-    "#00c200",
-    "#c7c400",
-    "#2744c7",
-    "#c040be",
-    "#00c5c7",
-    "#c7c7c7",
-  },
-  brights = {
-    "#686868",
-    "#dd7975",
-    "#58e790",
-    "#ece100",
-    "#a7abf2",
-    "#e17ee1",
-    "#60fdff",
-    "#ffffff",
-  },
   tab_bar = {
     background = colors.background,
     active_tab = {
