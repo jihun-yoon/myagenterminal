@@ -9,7 +9,9 @@ by default and refuses to overwrite existing files or unrelated symlinks.
 처음 사용하는 개발자는 먼저 [한국어 개발환경 설계 가이드](docs/design-guide.ko.md)를
 읽어 각 도구의 역할, 안전한 적용 순서, 기존 설정과 충돌할 때의 대응 방법을
 확인하세요. 실제 사용법은 [WezTerm, Neovim, and Herdr tutorial](docs/tutorial.md)에
-설명되어 있습니다.
+설명되어 있습니다. 빠른 단축키는 [한국어 치트시트](docs/cheatsheet.ko.md)를
+참고하세요. 상세 튜토리얼 PDF는 [튜토리얼 PDF](output/pdf/tutorial.ko.pdf),
+빠른 참고용 인쇄 PDF는 [치트시트 PDF](output/pdf/cheatsheet.ko.pdf)입니다.
 
 ## Inspiration
 
@@ -192,11 +194,9 @@ default nested stack. WezTerm's mux domains and workspaces are deliberately not
 configured; WezTerm acts only as the terminal frontend. tmux uses `Ctrl-a`; Herdr
 keeps its default `Ctrl-b` prefix.
 
-WezTerm keeps its tab bar visible at the top and shows macOS CPU activity,
-non-cache memory use, battery charge, and the current date and time on the right.
-The `MEM` value counts anonymous application memory, wired memory, and physical
-compressor pages while excluding reclaimable file-backed cache. The status
-refreshes every ten seconds; `BAT+` means the battery is charging.
+WezTerm keeps its tab bar visible at the top and shows battery charge and the
+current date and time on the right. The status refreshes every ten seconds;
+`BAT+` means the battery is charging.
 
 Herdr sends agent-completion and attention notifications through WezTerm.
 Notifications are forwarded even while WezTerm is focused, and Herdr keeps

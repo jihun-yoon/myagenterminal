@@ -37,18 +37,13 @@ work, or tmux for general and remote work, instead of nesting all three.
 Open **WezTerm** from Spotlight or the Applications folder. A plain zsh shell
 starts automatically.
 
-The top bar contains WezTerm tabs on the left and system information on the
-right:
+The top bar contains WezTerm tabs on the left and battery and clock information
+on the right:
 
 ```text
-[1. zsh]                         CPU 12%  MEM 62% | BAT+ 72% | Tue Sep 15  14:30
+[1. zsh]                                      BAT+ 72% | Tue Sep 15  14:30
 ```
 
-- `CPU` is total CPU activity normalized across the logical CPU cores.
-- `MEM` is non-cache memory use: anonymous application memory, wired memory,
-  and physical pages occupied by compressed memory. It excludes file-backed
-  cache that macOS can reclaim for applications, so it is more useful than
-  simply subtracting free pages from total RAM.
 - `BAT+` means the battery is charging; `BAT` means it is not charging.
 - The display refreshes every ten seconds.
 
@@ -60,11 +55,23 @@ right:
 | Close current tab | `Command-w` |
 | Previous or next tab | `Command-Shift-[` / `Command-Shift-]` |
 | Select tab 1–9 | `Command-1` … `Command-9` |
+| New WezTerm window | `Command-n` |
+| Previous or next window | `Command-\`` / `Command-Shift-\`` |
+| Select window 1–9 | `Command-Option-1` … `Command-Option-9` |
+| Move active pane to a new window | `Command-Shift-m` |
+| Scroll one page | `Command-Up` / `Command-Down` |
+| Scroll three lines | `Command-Shift-Up` / `Command-Shift-Down` |
 | Copy / paste | `Command-c` / `Command-v` |
 | Search terminal output | `Command-f` |
 | Increase / decrease font | `Command-+` / `Command--` |
 | Reset font size | `Command-0` |
 | Reload WezTerm configuration | `Command-r` |
+
+The window title shows its current number, such as `[1]` or `[2]`. Window
+numbers match the `Command-Option-1` through `Command-Option-9` shortcuts. A
+WezTerm tab is a tab inside one window; `Command-Shift-m` takes the active
+Herdr or shell pane out into a separate window without requiring an interactive
+shell command.
 
 Use WezTerm tabs for separate top-level activities. Use Herdr's tabs and panes
 for the related processes within one project.
@@ -81,6 +88,12 @@ The shell defines a few short commands:
 | `ll` | Detailed directory listing with Git information |
 | `tree` | Show a directory tree |
 
+`ls`, `ll`, and `tree` emit terminal hyperlinks for displayed paths. Hold
+`Command` and click a URL to open it in the browser, or click a `file://` path
+to open the local file with its macOS default application. This remains
+available when Codex, Neovim, or another pane application is using mouse
+reporting because the configured Command modifier is handled by WezTerm.
+
 Other interactive features include:
 
 - autosuggestions based on command history;
@@ -94,6 +107,36 @@ Other interactive features include:
 When a faint autosuggestion appears, press the right-arrow key to accept it.
 Use `Ctrl-r` to search command history. After zoxide learns your directories,
 `z project-name` can replace a long `cd` command.
+
+### Intentional tools in this setup
+
+These tools are installed by the repository because they support the workflow;
+they are not random extras. `./install.sh --apply --packages` installs the
+Homebrew entries in `Brewfile`. Claude Code and Codex are the exception: they
+are installed separately with `./scripts/agents.sh` because their publishers
+provide native installers.
+
+| Tool | What it is for | Start here |
+| --- | --- | --- |
+| Atuin | Search and reuse shell history | `↑` or `Ctrl-r`; type a query, `Enter` edits the selected command, `Esc` exits |
+| fzf | Fuzzy selection used by shell integrations | `Ctrl-t` files, `Alt-c` directories, or use it through picker commands |
+| zoxide | Jump to frequently used directories | `z project-name` |
+| Starship | Prompt showing Git and runtime context | It starts automatically with zsh |
+| zsh plugins | Suggestions, syntax highlighting, and completions | Type normally; accept a suggestion with `Right Arrow` |
+| bat | Read files with syntax highlighting | `cat README.md` |
+| eza | Modern directory listings and trees | `ls`, `ll`, `tree`; `⌘`-click printed paths |
+| ripgrep / fd | Search text / find files quickly | `rg "pattern" .` / `fd filename` |
+| jq | Inspect and transform JSON | `jq '.items[]' data.json` |
+| delta | Readable Git diffs | `git diff` |
+| mise | Manage Node 24 and pnpm 10.28.0 | `mise current`, `mise install` |
+| uv | Manage Python project environments | `uv sync` or `uv run ...` inside a Python project |
+| GitHub CLI | Work with GitHub from the terminal | `gh auth status`, `gh pr list` |
+
+Atuin's Up-arrow screen is intentional: it replaces the usual single-command
+history step with a searchable history list. Use `↑`/`↓` to select a result,
+`Enter` or `Tab` to edit it at the prompt, `Ctrl-o` to inspect it, and `Esc` to
+leave without selecting anything. The command is not executed until you submit
+it from the normal shell prompt.
 
 ## 4. Learn Neovim's modes first
 
@@ -268,6 +311,8 @@ Press `Ctrl-b`, then `?` at any time to show the active keybindings.
 | Close pane | `Ctrl-b`, then `x` |
 | Zoom/unzoom pane | `Ctrl-b`, then `z` |
 | Enter resize mode | `Ctrl-b`, then `r` |
+| Browse pane scrollback in copy mode | `Ctrl-b`, then `[` |
+| Open pane scrollback in `$EDITOR` | `Ctrl-b`, then `e` |
 | Toggle sidebar | `Ctrl-b`, then `b` |
 | Detach from Herdr | `Ctrl-b`, then `q` |
 
@@ -283,10 +328,42 @@ Press `Ctrl-b`, then `?` at any time to show the active keybindings.
 | Open workspace picker | `Ctrl-b`, then `w` |
 | Create workspace | `Ctrl-b`, then `Shift-n` |
 | Rename workspace | `Ctrl-b`, then `Shift-w` |
+| Close workspace | `Ctrl-b`, then `Shift-d` |
 | Create a Git-worktree workspace | `Ctrl-b`, then `Shift-g` |
 
 Uppercase actions mean holding Shift for the action key after releasing the
 prefix.
+
+### Browse scrollback without a mouse or Page Up/Down keys
+
+Herdr owns the scrollback for its panes while its full-screen interface is
+active. A WezTerm `ScrollByPage` shortcut therefore does not navigate Herdr's
+pane history. Enter Herdr copy mode instead:
+
+```text
+Ctrl-b, then [
+```
+
+Use these keys while copy mode is active:
+
+| Action | Key |
+| --- | --- |
+| Move half a page up / down | `Ctrl-u` / `Ctrl-d` |
+| Move one line up / down | `k` / `j` |
+| Move to the previous / next paragraph | `{` / `}` |
+| Search forward / backward | `/` / `?` |
+| Repeat the search forward / backward | `n` / `N` |
+| Leave copy mode | `q` or `Esc` |
+
+The copy-mode cursor starts at the bottom of the current output. After a large
+`Ctrl-u` or `Ctrl-d` movement, `k` and `j` still adjust that cursor one line at
+a time from its current position. For long history or more precise positioning,
+press `Ctrl-b`, then `e` instead. Herdr opens the pane scrollback in `$EDITOR`;
+in Neovim, use `Ctrl-u`/`Ctrl-d`, `H`/`M`/`L`, `zz`, and `/` search as usual.
+
+Closing a workspace with `Ctrl-b`, then `Shift-d` closes its Herdr panes after
+confirmation. It does not delete the project directory or an associated Git
+branch or worktree.
 
 ## 8. A practical agent workflow
 
@@ -491,6 +568,11 @@ restart WezTerm and validate the configuration with:
 ```bash
 wezterm --config-file ~/.config/wezterm/wezterm.lua ls-fonts >/dev/null
 ```
+
+If a URL or local file does not open, confirm that the path was printed by
+`ll` or `tree`, hold `Command` while clicking, and reload WezTerm with
+`Command-r`. For a `file://` path, macOS decides which default application
+opens the file.
 
 ## 13. A small practice exercise
 
