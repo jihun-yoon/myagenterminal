@@ -130,6 +130,27 @@ When a faint autosuggestion appears, press the right-arrow key to accept it.
 Use `Ctrl-r` to search command history. After zoxide learns your directories,
 `z project-name` can replace a long `cd` command.
 
+### Reading the Starship prompt
+
+Starship places the current directory, Git context, and active language runtimes
+on one line. For example:
+
+```text
+ridge on git:feat/131-iam-tag-based-model [$✘!?] via 🐍 v3.9.6 via  v24.21.0
+```
+
+| Segment | Meaning |
+| --- | --- |
+| `ridge` | Current directory |
+| `on git:feat/131-iam-tag-based-model` | Current Git branch |
+| `[$✘!?]` | Pending Git state: stashed changes (`$`), deleted files (`✘`), modified files (`!`), and untracked files (`?`) |
+| `via 🐍 v3.9.6` | Active Python version |
+| `via  v24.21.0` | Active Node.js version |
+
+The configured prompt order is `directory`, `git_branch`, `git_status`,
+`python`, `nodejs`, `rust`, and command duration. A segment appears only when
+its context applies; for example, Git status is absent in a clean repository.
+
 ### Intentional tools in this setup
 
 These tools are installed by the repository because they support the workflow;

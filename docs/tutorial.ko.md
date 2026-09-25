@@ -130,6 +130,28 @@ WezTerm이 처리하기 때문입니다.
 명령 기록 검색은 `Ctrl-r`을 사용합니다. zoxide가 자주 가는 디렉터리를
 학습한 뒤에는 `z project-name`으로 긴 `cd` 명령을 대체할 수 있습니다.
 
+### Starship 프롬프트 읽기
+
+Starship은 현재 디렉터리, Git 맥락, 활성 언어 런타임을 한 줄에 표시합니다.
+예를 들면 다음과 같습니다.
+
+```text
+ridge on git:feat/131-iam-tag-based-model [$✘!?] via 🐍 v3.9.6 via  v24.21.0
+```
+
+| 구간 | 의미 |
+| --- | --- |
+| `ridge` | 현재 디렉터리 |
+| `on git:feat/131-iam-tag-based-model` | 현재 Git 브랜치 |
+| `[$✘!?]` | 남아 있는 Git 상태: stash 변경사항(`$`), 삭제된 파일(`✘`), 수정된 파일(`!`), 추적되지 않은 파일(`?`) |
+| `via 🐍 v3.9.6` | 활성 Python 버전 |
+| `via  v24.21.0` | 활성 Node.js 버전 |
+
+이 저장소의 프롬프트 순서는 `directory`, `git_branch`, `git_status`,
+`python`, `nodejs`, `rust`, 명령 실행 시간입니다. 각 구간은 해당 맥락이
+있을 때만 표시됩니다. 예를 들어 Git 작업 트리가 깨끗하면 Git 상태 구간은
+나타나지 않습니다.
+
 ### 이 설정에 포함된 의도적인 도구들
 
 아래 도구들은 작업 흐름을 돕기 위해 설치됩니다. 임의로 추가된 것이 아닙니다.
