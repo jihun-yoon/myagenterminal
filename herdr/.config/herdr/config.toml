@@ -10,3 +10,13 @@ delay_seconds = 1
 # Notify when agents finish or need attention in background workspaces.
 [ui.sound]
 enabled = true
+
+[theme]
+name = "gruvbox"
+auto_switch = true
+dark_name = "gruvbox"
+light_name = "gruvbox-light"
+
+# Keep the panel surface on the host terminal's soft Gruvbox background.
+[theme.custom]
+panel_bg = "reset"

@@ -8,10 +8,14 @@ by default and refuses to overwrite existing files or unrelated symlinks.
 
 처음 사용하는 개발자는 먼저 [한국어 개발환경 설계 가이드](docs/design-guide.ko.md)를
 읽어 각 도구의 역할, 안전한 적용 순서, 기존 설정과 충돌할 때의 대응 방법을
-확인하세요. 실제 사용법은 [WezTerm, Neovim, and Herdr tutorial](docs/tutorial.md)에
-설명되어 있습니다. 빠른 단축키는 [한국어 치트시트](docs/cheatsheet.ko.md)를
-참고하세요. 상세 튜토리얼 PDF는 [튜토리얼 PDF](output/pdf/tutorial.ko.pdf),
+확인하세요. 실제 사용법은 [한국어 튜토리얼](docs/tutorial.ko.md)에서
+설명합니다([영어판](docs/tutorial.md)도 제공). Neovim 일반 모드와 매크로는
+튜토리얼 4장에서 다룹니다. 빠른 단축키는
+[한국어 치트시트](docs/cheatsheet.ko.md)를 참고하세요. 상세 튜토리얼 PDF는
+[튜토리얼 PDF](output/pdf/tutorial.ko.pdf),
 빠른 참고용 인쇄 PDF는 [치트시트 PDF](output/pdf/cheatsheet.ko.pdf)입니다.
+Neogit의 section·hunk와 diff의 `@@` 표기가 낯설다면
+[한국어 Neogit 가이드](docs/neogit-guide.ko.md)부터 읽어도 좋습니다.
 
 ## Inspiration
 
@@ -55,7 +59,7 @@ cannot be mistaken for portable configuration.
 - Workspaces: tmux for general/remote work, Herdr for agent-heavy work
 - CLI: ripgrep, fd, bat, eza, jq, delta, GitHub CLI
 - Runtimes: mise with Node 24 and pnpm 10.28.0; uv for Python projects
-- Review editor: Neovim with Gitsigns, Neogit, Snacks, and which-key
+- Review editor: Neovim with Gitsigns, Neogit, Oil, Snacks, and which-key
 - Agents: publisher-native Claude Code and Codex CLI, plus a global policy template
 
 ## Repository layout
@@ -70,7 +74,8 @@ cannot be mistaken for portable configuration.
 │   ├── bootstrap.sh         dry-run/apply implementation
 │   ├── agents.sh            publisher-native agent CLI management
 │   ├── check.sh             isolated installer verification
-│   └── macos.sh             optional macOS defaults, dry-run by default
+│   ├── macos.sh             optional macOS defaults, dry-run by default
+│   └── theme.sh             shared Gruvbox day/night selection
 ├── wezterm/                 Stow packages mirror the home directory
 ├── zsh/
 ├── starship/
@@ -197,6 +202,30 @@ keeps its default `Ctrl-b` prefix.
 WezTerm keeps its tab bar visible at the top and shows battery charge and the
 current date and time on the right. The status refreshes every ten seconds;
 `BAT+` means the battery is charging.
+
+Use `./scripts/theme.sh day` or `./scripts/theme.sh night` to switch the shared
+Gruvbox theme. Night is the default; `./scripts/theme.sh status` shows the saved
+mode. WezTerm uses the corresponding soft color scheme and reloads its config,
+while Herdr follows the host terminal with its Gruvbox/Gruvbox Light themes.
+New Neovim sessions use the same mode with soft contrast; restart an open Neovim
+session to update it. The choice is stored in the untracked
+`~/.config/myagenterminal/theme` file, not in the repository. `theme.sh` is not
+installed as a global command: run it from the repository root as shown above,
+or invoke it by its absolute path from another directory. There is no `mat`
+command in this version.
+
+In Neovim, `Space e` opens Oil's file browser. Oil displays a directory as an
+editable buffer; `Enter` opens an entry, `-` goes to the parent directory, and
+`:w` applies filesystem edits. Snacks supplies the `Space Space` file picker,
+`Space /` text search, Git branch/history pickers, notifications, and handling
+for large files. See the tutorials for the distinction between browsing with
+Oil and searching with Snacks.
+
+The Korean tutorial PDF is built from `docs/tutorial.ko.md`; regenerate it
+with `uv run --no-project --with reportlab python scripts/build_tutorial_pdf.py`.
+The cheatsheet PDF is maintained by `scripts/build_cheatsheet_pdf.py`, so update
+that builder alongside `docs/cheatsheet.ko.md` before rebuilding it the same
+way. Review the rendered PDFs after either command.
 
 Herdr sends agent-completion and attention notifications through WezTerm.
 Notifications are forwarded even while WezTerm is focused, and Herdr keeps

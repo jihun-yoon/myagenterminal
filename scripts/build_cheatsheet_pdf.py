@@ -194,10 +194,12 @@ story = [
         ]
     ),
     p("각 창 제목 표시줄에는 [1], [2]처럼 창 번호가 표시됩니다. ll과 tree는 파일 경로를 hyperlink로 출력하며, ⌘-클릭하면 URL은 브라우저로, file:// 경로는 macOS 기본 앱으로 열립니다."),
+    p("테마: myagenterminal 저장소에서 <b>./scripts/theme.sh day|night|status</b>를 실행합니다. 전역 mat 명령은 없으며, 이미 열린 Neovim은 재시작해야 합니다.", "KSmall"),
     p("3. Herdr", "KH1"),
     p("프로젝트에서 <b>h</b>를 실행하면 Herdr를 시작하거나 기존 세션에 다시 연결합니다."),
     code("cd ~/path/to/project\nh"),
     p("Prefix는 <b>Ctrl-b</b>입니다. Ctrl-b를 누르고 손을 뗀 뒤 다음 키를 누릅니다."),
+    p("Codex 출력 읽기: Codex pane에 초점을 맞춘 뒤 <b>Ctrl-b, e</b>. Herdr 스크롤백이 Neovim에서 열립니다. <b>gg/G</b> 처음/끝, <b>Ctrl-u/d</b> 반 페이지, <b>/</b> 검색, <b>:q</b> 종료. Copy mode는 필요 없습니다.", "KSmall"),
     key_table(
         [
             ("도움말", "Ctrl-b, ?"),
@@ -216,7 +218,7 @@ story = [
             ("workspace 닫기", "Ctrl-b, Shift-d"),
         ]
     ),
-    p("Copy mode: <b>Ctrl-u/d</b> 반 페이지, <b>k/j</b> 한 줄, <b>/</b> 검색, <b>q</b> 종료. 긴 기록은 <b>Ctrl-b, e</b>로 편집기에서 엽니다.", "KSmall"),
+    p("Copy mode: <b>Ctrl-b, [</b>로 진입, <b>Ctrl-u/d</b> 반 페이지, <b>k/j</b> 한 줄, <b>q</b> 종료. 편집기에는 Herdr에 남은 출력만 표시됩니다. 빠진 Codex 답변은 Markdown 파일로 저장해 열어보세요.", "KSmall"),
     p("자주 쓰는 명령: <b>herdr status</b>, <b>herdr workspace list</b>, <b>herdr agent list</b>, <b>herdr server reload-config</b>"),
     p("4. Neovim", "KH1"),
     key_table(
@@ -225,6 +227,7 @@ story = [
             ("Normal 모드로 복귀", "Esc"),
             ("Visual 선택", "v / V"),
             ("파일 찾기 / 텍스트 검색", "Space Space / Space /"),
+            ("Oil 폴더 탐색", "Space e"),
             ("Neogit", "Space g g"),
             ("다음/이전 변경 hunk", "]h / [h"),
             ("hunk 미리보기/Stage/Reset", "Space h p / Space h s / Space h r"),
@@ -232,6 +235,7 @@ story = [
         ]
     ),
     p("Normal 모드 명령: <b>:w</b> 저장, <b>:q</b> 종료, <b>:wq</b> 저장 후 종료, <b>:q!</b> 저장하지 않고 종료"),
+    p("Oil: Enter로 열고 -로 상위 폴더로 이동합니다. 이름 변경 등 파일 작업은 :w로 적용됩니다. Snacks는 Space Space/Space / 같은 빠른 검색을 제공합니다.", "KSmall"),
     p("5. 추천 실전 흐름", "KH1"),
     code("cd ~/path/to/project\nh\nclaude  # 또는 codex\nCtrl-b, v\nv .\nCtrl-b, -\n# 아래 pane에서 테스트·서버·로그 실행\nCtrl-b, z  # 확대/복원\nCtrl-b, q  # 분리\nh           # 다시 연결"),
     p("문제가 생기면 Herdr 안인지 <b>echo $HERDR_ENV</b>로 확인하고, 단축키는 <b>Ctrl-b, ?</b>로 현재 키맵을 확인합니다."),
