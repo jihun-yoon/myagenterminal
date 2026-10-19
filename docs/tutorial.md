@@ -304,6 +304,23 @@ notification UI, large-file handling, and quick file opening. Use Oil to
 navigate and manage a directory; use a Snacks picker when you know a file name
 or text fragment and want to find it quickly.
 
+### Preview Markdown in the terminal
+
+With a Markdown file open, press `Space m p` or run `:RenderMarkdown preview` to
+open a rendered preview on the right. The source keeps its Markdown syntax,
+while the preview reflects unsaved edits. Use `Ctrl-h` and `Ctrl-l` to move
+between the windows, and press `Space m p` again from the source to close the
+preview. lazy.nvim installs the preview plugin on the first Neovim launch.
+
+If scrolling the preview in WezTerm partially erases the source window, run
+`:redraw!` in Neovim to repaint it. `Ctrl-l` moves to the right split in this
+setup, so it does not redraw the screen. The file contents are unchanged. This
+matches a [known WezTerm and Neovim split scrolling issue](https://github.com/neovim/neovim/issues/35133).
+For a persistent fix, follow [WezTerm's instructions](https://wezterm.org/config/lua/config/term.html)
+to install its `wezterm` terminfo, then add `config.term = "wezterm"` to the
+WezTerm config. Open a new terminal tab and check that `echo $TERM` prints
+`wezterm`.
+
 ### Work with editor splits
 
 Create splits with `:vsplit` or `:split`, then move between them with:
@@ -718,6 +735,7 @@ Once this sequence feels comfortable, use the same layout in a real project.
 - Neovim macro recording and replay: <https://neovim.io/doc/user/usr_10/>
 - Oil file browser: <https://github.com/stevearc/oil.nvim>
 - Snacks pickers and UI helpers: <https://github.com/folke/snacks.nvim>
+- Neovim Markdown preview: <https://github.com/MeanderingProgrammer/render-markdown.nvim>
 - Herdr concepts: <https://herdr.dev/docs/concepts/>
 - Herdr keyboard guide: <https://herdr.dev/docs/keyboard/>
 - Herdr configuration: <https://herdr.dev/docs/configuration/>
