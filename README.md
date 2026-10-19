@@ -59,7 +59,7 @@ cannot be mistaken for portable configuration.
 - Workspaces: tmux for general/remote work, Herdr for agent-heavy work
 - CLI: ripgrep, fd, bat, eza, jq, delta, GitHub CLI
 - Runtimes: mise with Node 24 and pnpm 10.28.0; uv for Python projects
-- Review editor: Neovim with Gitsigns, Neogit, Oil, Snacks, and which-key
+- Review editor: Neovim with Gitsigns, Neogit, Oil, Snacks, which-key, and Markdown preview
 - Agents: publisher-native Claude Code and Codex CLI, plus a global policy template
 
 ## Repository layout
@@ -243,6 +243,7 @@ In Neovim:
 - `<leader>gg` opens Neogit.
 - `]h` / `[h` move between changed hunks.
 - `<leader>hp`, `<leader>hs`, and `<leader>hr` preview, stage, and reset a hunk.
+- `<leader>mp` opens a live Markdown preview beside the source file.
 
 ## Verify the method
 

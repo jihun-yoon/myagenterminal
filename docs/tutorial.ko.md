@@ -305,6 +305,24 @@ Snacks는 별도의 빠른 **선택기(picker)**와 UI 기능 묶음입니다. `
 큰 파일 처리와 빠른 파일 열기도 켭니다. Oil은 폴더를 따라가며 파일을
 관리할 때, Snacks 선택기는 이름이나 내용을 알고 빠르게 찾을 때 쓰세요.
 
+### 터미널에서 Markdown 미리보기
+
+Markdown 파일을 연 상태에서 `Space m p`를 누르거나
+`:RenderMarkdown preview`를 실행하면 렌더링된 미리보기가 오른쪽에 열립니다.
+미리보기는 Neovim 안에서 동작하며, 원문은 Markdown 문법 그대로 둔 채
+저장 전 수정도 반영합니다. `Ctrl-h`와 `Ctrl-l`로 두 창 사이를 이동하고,
+원문 창에서 `Space m p`를 다시 누르면 미리보기가 닫힙니다.
+처음 Neovim을 실행하면 lazy.nvim이 미리보기 플러그인을 설치합니다.
+
+WezTerm에서 오른쪽 미리보기를 스크롤할 때 왼쪽 원문 화면 일부가 지워져
+보이면, Neovim 명령줄에서 `:redraw!`를 실행해 화면을 다시 그립니다.
+`Ctrl-l`은 이 설정에서 오른쪽 창 이동 키이므로 새로고침에 사용할 수 없습니다.
+파일 내용이 바뀐 것은 아닙니다. 이 현상은 구형 WezTerm에서 Neovim의
+세로 분할 스크롤과 충돌하는 [알려진 문제](https://github.com/neovim/neovim/issues/35133)입니다.
+지속적인 해결 방법은 [WezTerm의 안내](https://wezterm.org/config/lua/config/term.html)에
+따라 `wezterm` terminfo를 설치한 뒤 WezTerm 설정에 `config.term = "wezterm"`을
+추가하는 것입니다. 새 터미널 탭을 열어 `echo $TERM`이 `wezterm`인지 확인하세요.
+
 ### 편집기 분할 다루기
 
 `:vsplit` 또는 `:split`으로 분할을 만든 뒤 다음 키로 이동합니다.
@@ -724,6 +742,7 @@ h
 - Neovim 매크로 기록과 재생: <https://neovim.io/doc/user/usr_10/>
 - Oil 파일 탐색기: <https://github.com/stevearc/oil.nvim>
 - Snacks 선택기와 UI 기능: <https://github.com/folke/snacks.nvim>
+- Neovim Markdown 미리보기: <https://github.com/MeanderingProgrammer/render-markdown.nvim>
 - Herdr 개념: <https://herdr.dev/docs/concepts/>
 - Herdr 키보드 가이드: <https://herdr.dev/docs/keyboard/>
 - Herdr 설정: <https://herdr.dev/docs/configuration/>
